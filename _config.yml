@@ -4,8 +4,8 @@
 
 url: http://yunfeizu.github.com
 title: Cloud's Blog
-subtitle: 人生太过短暂，梦想不容我们拖延。
-  #인생은 너무 짧기에 꿈을 미룰 수 있는 여유조차 없다
+subtitle: 인생은 너무 짧기에 꿈을 미룰 수 있는 여유조차 없다
+  #人生太过短暂，梦想不容我们拖延。
 author: Yunfei Zu
 simple_search: http://google.com/search
 description:
@@ -90,7 +90,7 @@ disqus_short_name: yunfeizugithub
 disqus_show_comment_count: false
 
 # Google Analytics
-google_analytics_tracking_id:
+google_analytics_tracking_id: UA-39825201-1
 
 # Facebook Like
 facebook_like: false
