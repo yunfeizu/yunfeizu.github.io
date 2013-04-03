@@ -3,7 +3,7 @@ layout: post
 title: "在ubuntu 12.04 上安装ruby"
 date: 2013-04-01 12:03
 comments: true
-categories: 
+categories: [博客设置, 工具]
 ---
 
   在安装octogress的时候需要ruby1.9.3, ubuntu 12.04 默认的是1.8, 虽然有1.9.3的源，但是所有的库用的还是1.9.1的，运行octogress的时候出现了很多莫名其妙的错误，用ubuntu自带的rvm安装更是产生无数的问题。求助于goolge, 发现很多讲用ubuntu做ruby on rail开发的都会手动安装rvm和最新版ruby, 但是跟着做了以后，总会在某个地方出现问题。最后发现了一篇[How to install Ruby (and RVM) on Ubuntu (for technotards)](http://blog.coolaj86.com/articles/installing-ruby-on-ubuntu-12-04.html), 终于配置成功了。
@@ -13,7 +13,7 @@ categories:
 
 ### 卸载系统默认的ruby和rvm
     sudo apt-get remove --purge ruby-rvm ruby
-    sudo rm -rf /usr/share/ruby-rvm /etc/rmvrc /etc/profile.d/rvm.sh
+    sudo rm -rf /usr/share/ruby-rvm /etc/rvmrc /etc/profile.d/rvm.sh
     rm -rf ~/.rvm* ~/.gem/ ~/.bundle
 
 ### 为了加快安装速度，禁止安装document

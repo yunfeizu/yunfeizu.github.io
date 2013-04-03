@@ -3,7 +3,7 @@ layout: post
 title: "closure and c++11 lambda"
 date: 2013-04-02 22:51
 comments: true
-categories: 
+categories: [C++11, learning cycle]
 ---
 
 ##What is "Closure"
