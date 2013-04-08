@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "c++11: auto 和 decltype"
-date: 2013-04-03 16:00
+date: 2013-04-06 16:00
 comments: true
 categories: [C++11, learning cycle]
 ---
@@ -76,7 +76,7 @@ void some_func(T &t)
 
 关于何时应该使用auto, Andrei Alexandrescu, Scott Meyers 和Herb Sutter在C++ and Beyond 2012的Ask Us Anything panel上给出了意见：鼓励在所有地方使用auto,除非你需要做一个类型转换。当然他们做了很多解释，这段[视频](http://channel9.msdn.com/Shows/Going+Deep/C-and-Beyond-2012-Scott-Andrei-and-Herb-Ask-Us-Anything#time=25m03s)值得多看几遍。
 
-相对与auto, decltype 更有针对性，具体用法参照里clearning cycle PPT中的例子，这里不再累述。一句话就是：auto是为所有人准备的，而decltype是提供给模板开发者的。
+相对与auto, decltype 更有针对性，具体用法参照里learning cycle PPT中的例子，这里不再累述。一句话就是：auto是为所有人准备的，而decltype是提供给模板开发者的。
 
 下面是一些auto和decltype 的用法细节，摘抄自cruise的PPT:
 
