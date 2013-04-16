@@ -39,6 +39,14 @@ git commit -m 'your message'
 git push origin source
 {% endcodeblock %}
 
+在一台新的电脑上维护Blog, 需要安装Octopress依赖环境，设置SSH, 并clone出一份source branche, 然后设置Github连接。
+{% codeblock lang:bash %}
+cd blog
+git clone -b source git@github.com:yunfeizu/yunfeizu.github.com.git
+cd yunfeizu.github.com
+rake setup_github_pages
+{% endcodeblock %}
+
 ## Octopress命令汇总：
 
 * rake new_post[‘article name’] 生成博文框架，然后修改生成的文件即可
