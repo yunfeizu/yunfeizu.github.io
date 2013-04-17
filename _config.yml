@@ -4,8 +4,10 @@
 
 url: http://yunfeizu.github.com
 title: Cloud's Blog
-subtitle: 人生太过短暂，梦想不容我们拖延。
+subtitle: 
+  #人生太过短暂，梦想不容我们拖延。
   #인생은 너무 짧기에 꿈을 미룰 수 있는 여유조차 없다
+  The Spartans did not ask "how many are the enemy," but "where are they?"
 author: Yunfei Zu
 simple_search: http://google.com/search
 description:
