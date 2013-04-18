@@ -3,6 +3,7 @@ layout: post
 title: "vim中的杀手级插件: surround"
 date: 2013-04-17 14:48
 comments: true
+keywords: vim, plugin, surround, text object, motion
 categories: [vim]
 ---
 

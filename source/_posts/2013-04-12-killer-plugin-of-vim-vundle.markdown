@@ -3,6 +3,7 @@ layout: post
 title: "vim中的杀手级插件: vundle"
 date: 2013-04-12 13:40
 comments: true
+keywords: vim, plugin, vundle, plugin management, git
 categories: [vim]
 ---
 

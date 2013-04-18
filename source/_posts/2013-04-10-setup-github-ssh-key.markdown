@@ -3,6 +3,7 @@ layout: post
 title: "为Github账户设置SSH key"
 date: 2013-04-10 10:11
 comments: true
+keywords: blog, octopress, github, pages, ssh key, 公开密匙，SSH加密
 categories: [博客设置, 工具]
 ---
 ## 什么是SSH key

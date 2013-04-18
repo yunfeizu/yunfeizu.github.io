@@ -3,6 +3,7 @@ layout: post
 title: "c++11 learning cycle start"
 date: 2013-04-03 16:38
 comments: true
+keywords: C++, C++11, C++0x, auto, decltype, lambda, STL
 categories: [C++11, learning cycle]
 ---
 

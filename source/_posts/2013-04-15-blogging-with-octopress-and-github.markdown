@@ -3,6 +3,7 @@ layout: post
 title: "使用Octopress和Github搭建Blog"
 date: 2013-04-15 17:47
 comments: true
+keywords: blog, octopress, github, pages
 categories: [博客设置, 工具]
 ---
 

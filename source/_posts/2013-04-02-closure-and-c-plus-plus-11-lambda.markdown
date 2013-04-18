@@ -3,6 +3,7 @@ layout: post
 title: "closure and c++11 lambda"
 date: 2013-04-02 22:51
 comments: true
+keywords: C++, C++11, C++0x, closure, 闭包, lambda 
 categories: [C++11, learning cycle]
 ---
 

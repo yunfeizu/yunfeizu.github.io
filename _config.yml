@@ -10,7 +10,8 @@ subtitle:
   The Spartans did not ask "how many are the enemy," but "where are they?"
 author: Yunfei Zu
 simple_search: http://google.com/search
-description:
+description: vim tips, C++ programming, agile software development
+keywords: C++, programming, python, vim, agile, scrum
 
 # Default date format is "ordinal" (resulting in "July 22nd 2007")
 # You can customize the format as defined in

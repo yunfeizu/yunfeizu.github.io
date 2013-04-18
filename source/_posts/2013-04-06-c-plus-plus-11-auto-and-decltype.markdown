@@ -3,6 +3,7 @@ layout: post
 title: "c++11: auto 和 decltype"
 date: 2013-04-06 16:00
 comments: true
+keywords: C++, C++11, C++0x, auto, decltype, 自动类型推导
 categories: [C++11, learning cycle]
 ---
 

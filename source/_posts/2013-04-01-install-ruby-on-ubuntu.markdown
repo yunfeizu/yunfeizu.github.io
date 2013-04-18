@@ -3,6 +3,7 @@ layout: post
 title: "在ubuntu 12.04 上安装ruby"
 date: 2013-04-01 12:03
 comments: true
+keywords: blog, octopress, unbuntu, ruby, rvm
 categories: [博客设置, 工具]
 ---
 
