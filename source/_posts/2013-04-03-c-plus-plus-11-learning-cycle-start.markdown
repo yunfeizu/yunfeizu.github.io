@@ -18,6 +18,6 @@ categories: [C++11, learning cycle]
 《小雅》够高雅了吧，关键注意读音：喈(jiē) 蘩(fán) 祁(qí)，不然就露怯了。
 
 
-1. [C+＋11 的auto和decltype](/blog/2013/04/03/c-plus-plus-11-auto-and-decltype/)
+1. [C+＋11 的auto和decltype](/blog/2013/04/06/c-plus-plus-11-auto-and-decltype/)
 2. [Closure and C++11 lambda](/blog/2013/04/02/closure-and-c-plus-plus-11-lambda/)
 3. standard library enhancement
