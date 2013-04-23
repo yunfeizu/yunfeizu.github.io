@@ -1,0 +1,27 @@
+---
+layout: post
+title: "开始学习Git"
+date: 2013-04-22 16:03
+comments: true
+keywords: git, scm, version control, vcs, github, svn
+categories: Git
+---
+做为程序开发者，你一定绕不开的就是[版本控制系统VCS](http://en.wikipedia.org/wiki/Revision_control) (或者代码管理系统SCM)，它并不仅仅是一个工具那么简单，更代表的是一种软件从开发调试到发布过程的组织哲学，不仅是工具命令更是方法论。
+
+### 使用svn的经验
+
+做软件开发很多年，但对于版本控制很长时间只用过subversion, 很久以前在windows上用TortoiseSVN, 后来转到linux下用命令行，用rabbitvcs, 在svn的圈圈内从来也没有出来过，一切都理所当然，从来也没有觉得svn有什么不好。直到Team要和在Stockholm的团队一起开发，checkout一个branch要一晚上，update前一天欧洲团队的commits要十几分钟，同步代码变成了一个很浪费时间的事，Team开始时把主要的开发branch, checkout到本地办公室的服务器，开发人员需要某个branch的时候，先拷贝到本机，做switch或update后开始工作。后来在本地建了个svn镜像，耗时的操作可以通过镜像做，再后来公司升级了网络，更改了svn部署策略，同步代码虽然依然很耗时，但是已经不再不可忍受。但是如果要做bug fixing, 定位bug, 理解bug引入的上下文，需要查看svn历史记录，简直就是不可完成的任务。查询svn log, 对比两个版本间某个文件的修改，都需要和欧洲的服务器通讯，而且定位一个bug, 往往需要多次的查log看diff, 耗费了大量时间，思路也常常被打断。为了这个，我还写了个工具，叫[svn history](https://github.com/yunfeizu/svnhistory), 有一个方便查看svn repos的GUI, 查svn log时会自动从本地svn镜像读取，提供针对commit的author, reviewer, filename, log message等信息的查询功能，用户将commits缩小范围后，可以很方便查看每次相关commit的修改内容，从而让开发者能够快速理解代码的演变，定位bug的位置。这个工具还很不成熟，但是在日常开发过程中，却帮了我很多忙。正是在写这个工具的时候，为了把代码上传到Github上，我才接触了Git, 了解到了svn以外的世界，在用Pages发布博客后，对Git的使用越来越频繁，发觉是时候深入的学习下Git了。
+
+<!-- more -->
+### 学习Git的正确方法
+
+作为只用过svn的用户，我最初接触Git的时候，不可避免的把Git和svn进行了比较。跟着Github的指南做的时候，也会用svn命令来理解Git 命令，这也是人学习新事物的时候的基本方式：联想和类比已知的事物。但是这样的类比，用在差别很大的事物之间，就会产生误导，增加学习的难度。我的经验告诉我，我对svn的认识，让我对版本控制，branch, tag, commit, log, diff这些东西很熟悉，并对他们在开发中应用有切身体会。但是仅此而已，它们对学习怎么样正确的使用Git来高效的工作并没有帮助，甚至很长时间内误导了我对Git的使用。因为Git和svn 基本的理念有很大不同。所以我建议其他初学者完全抛弃从svn 那里学到的概念和操作，从头学习Git, 理解Git的设计理念(而不是像我一样，跟着别人的Git命令做，按自己固有认识的理解这些操作）。如果没有接触过版本控制，推荐看一下这篇[Git Parable](http://tom.preston-werner.com/2009/05/19/the-git-parable.html)，用寓言故事的方式，很形象的说明了版本管理中的各种应用场景。 
+
+### Git是分布式版本控制系统
+首先Git是分布式的，而svn是中心式的（或者叫集中式的）版本控制系统，这是两者之间理念上的最大的不同。分布式版本控制系统不同与svn cvs等集中式版本控制系统的Server-Client模式，而是实现了一种P2P的系统结构，用户的本地一样拥有完整的代码仓库，就好像所有用户都拥有一个代码仓库的镜像，这就是为什么你从远端服务器获得初始的代码的命令叫`git clone`了。Git中除了和远端服务器同步代码，几乎所有操作，如commit diff log等，都可以在本地进行。其实这里服务器和用户的本地仓库在地位上是平等的，完全可以没有这个服务器而在两个开发者机器之间同步，只是出于软件开发的组织结构，我们总要有一个地方存放最官方的最终要发布的代码，其他开发向这个地方提交更新，或者拿到最新的代码。这就是为什么Git中对要同步代码的目的地不叫Server，而叫remote了，而保存最官方代码的remote按惯例叫origin。提交代码也不是像svn一样commit到中心服务器，而是commit到本地保存的代码仓库，必要的时候，通过push和pull与其他remote同步。关于分布式和集中式版本控制系统的详细介绍看[这里](https://en.wikipedia.org/wiki/Distributed_revision_control)。
+
+关于svn和git等版本控制系统优缺点，这里就不说了，现在只有粗浅认识，Git不熟，svn也没充分利用所以功能，其他工具更没接触过。如果以后若心得，再记不迟。这里推荐两篇博文：[蒋鑫：为什么 Git 比 SVN 好](http://www.worldhello.net/2012/04/12/why-git-is-better-than-svn.html), [云风：分布式的版本控制工具](http://blog.codingnow.com/2008/01/distributed_version_control.html)
+
+
+
+
