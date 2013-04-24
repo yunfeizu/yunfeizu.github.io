@@ -20,6 +20,8 @@ categories: Git
 ### Git是分布式版本控制系统
 首先Git是分布式的，而svn是中心式的（或者叫集中式的）版本控制系统，这是两者之间理念上的最大的不同。分布式版本控制系统不同与svn cvs等集中式版本控制系统的Server-Client模式，而是实现了一种P2P的系统结构，用户的本地一样拥有完整的代码仓库，就好像所有用户都拥有一个代码仓库的镜像，这就是为什么你从远端服务器获得初始的代码的命令叫`git clone`了。Git中除了和远端服务器同步代码，几乎所有操作，如commit diff log等，都可以在本地进行。其实这里服务器和用户的本地仓库在地位上是平等的，完全可以没有这个服务器而在两个开发者机器之间同步，只是出于软件开发的组织结构，我们总要有一个地方存放最官方的最终要发布的代码，其他开发向这个地方提交更新，或者拿到最新的代码。这就是为什么Git中对要同步代码的目的地不叫Server，而叫remote了，而保存最官方代码的remote按惯例叫origin。提交代码也不是像svn一样commit到中心服务器，而是commit到本地保存的代码仓库，必要的时候，通过push和pull与其他remote同步。关于分布式和集中式版本控制系统的详细介绍看[这里](https://en.wikipedia.org/wiki/Distributed_revision_control)。
 
+{% img center /images/distribute-version-control.png %}
+
 关于svn和git等版本控制系统优缺点，这里就不说了，现在只有粗浅认识，Git不熟，svn也没充分利用所以功能，其他工具更没接触过。如果以后若心得，再记不迟。这里推荐两篇博文：[蒋鑫：为什么 Git 比 SVN 好](http://www.worldhello.net/2012/04/12/why-git-is-better-than-svn.html), [云风：分布式的版本控制工具](http://blog.codingnow.com/2008/01/distributed_version_control.html)
 
 
