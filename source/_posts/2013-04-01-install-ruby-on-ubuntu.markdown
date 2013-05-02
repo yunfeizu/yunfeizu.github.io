@@ -20,7 +20,7 @@ categories: [博客设置, 工具]
 ### 为了加快安装速度，禁止安装document
     echo 'gem: --no-rdoc --no-ri' >> ~/.gemrc
 
-### 安装比较的工具和库
+### 安装必要的工具和库
     sudo apt-get install -y \
       git \
       build-essential \
