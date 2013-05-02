@@ -6,7 +6,10 @@ comments: true
 keywords: git, branch, merge, svn
 categories: Git
 ---
+### Git的分支
+Git 的一个显著特点就是Branch 和 Merge 非常的方便
 
+###删除远程分支
 As of Git v1.7.0, you can delete a remote branch using
 git push origin --delete <branchName>
 
