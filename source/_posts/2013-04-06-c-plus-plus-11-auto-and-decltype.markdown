@@ -4,7 +4,7 @@ title: "c++11: auto 和 decltype"
 date: 2013-04-06 16:00
 comments: true
 keywords: C++, C++11, C++0x, auto, decltype, 自动类型推导
-categories: [C++11, learning cycle]
+categories: [C++, C++11, learning cycle]
 ---
 
 感谢curise的精彩讲解，内容很短但是所有相关细节都讲的很清楚。learning cycle上有人担心不写明类型会使程序易读性变差，造成不必要的错误。会上时间有限，并没有做深入讨论，这里有必要说一下。

@@ -4,7 +4,7 @@ title: "c++11 learning cycle start"
 date: 2013-04-03 16:38
 comments: true
 keywords: C++, C++11, C++0x, auto, decltype, lambda, STL
-categories: [C++11, learning cycle]
+categories: [C++, C++11, learning cycle]
 ---
 
 本周team开始了C+＋11的learning cycle。为了记录学习内容，将会陆续加入一系列对learning cycle的总结。 为了使本博客闲得高雅一点，这里引用古诗一首，以纪念这个我们脱了毛裤很久，春姑娘也不肯来的4月，并预祝P3圆满成功。
