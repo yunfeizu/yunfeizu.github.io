@@ -128,5 +128,5 @@ int main()
     assert(!(p < q || q < p)); // p and q must share ownership
 }
 {% endcodeblock %}
-用户自定义的class只需要继承与boost::enable_shared_from_this就可以调用shared_from_this了，用户并不需要重载任何虚函数，或者其他额外的代码，就能使用shared_ptr和shared_from_this。另一个例子请看[这篇文章](http://www.cnblogs.com/mightofcode/archive/2013/04/03/2996323.html)，它分析了WTL中双缓存渲染类CDoubleBufferImpl的设计和应用。
+用户自定义的class只需要继承与boost::enable_shared_from_this就可以调用shared_from_this了，用户并不需要重载任何虚函数，或者其他额外的代码，就能使用shared_ptr和shared_from_this。另一个例子请看[这篇文章](http://www.cnblogs.com/mightofcode/archive/2013/04/03/2996323.html)，它分析了WTL中双缓存渲染类CDoubleBufferImpl的设计，很好的总结了CRTP的用法。
 
