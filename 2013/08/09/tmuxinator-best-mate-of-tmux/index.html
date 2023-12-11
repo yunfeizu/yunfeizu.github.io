@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zuyunfei.com","root":"/","scheme":"Gemini","version":"8.0.0-rc.3","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":false,"nav":null,"activeClass":"disqus"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="先前的博文介绍过tmux，极大的提高了远程登陆linux server的操作效率。但是tmux在系统重启后，所有的tmux session都会被消除，你分好的window pane, 所有的环境设置都没有了。这对于基本不关机的server问题不大，但是开发者如果想在自己的机器上使用tmux, 就不得不面对怎么在系统重启后恢复tmux session的问题。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="tmux最佳伴侣：tmuxinator">
+<meta property="og:url" content="http://zuyunfei.com/2013/08/09/tmuxinator-best-mate-of-tmux/index.html">
+<meta property="og:site_name" content="Cloud&#39;s Blog">
+<meta property="og:description" content="先前的博文介绍过tmux，极大的提高了远程登陆linux server的操作效率。但是tmux在系统重启后，所有的tmux session都会被消除，你分好的window pane, 所有的环境设置都没有了。这对于基本不关机的server问题不大，但是开发者如果想在自己的机器上使用tmux, 就不得不面对怎么在系统重启后恢复tmux session的问题。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://zuyunfei.com/images/tmuxinator-sample.png">
+<meta property="article:published_time" content="2013-08-09T03:42:30.000Z">
+<meta property="article:modified_time" content="2022-11-12T05:20:47.833Z">
+<meta property="article:author" content="Yunfei Zu">
+<meta property="article:tag" content="tmux">
+<meta property="article:tag" content=" tmuxinator">
+<meta property="article:tag" content=" linux">
+<meta property="article:tag" content=" CLI">
+<meta property="article:tag" content=" screen">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://zuyunfei.com/images/tmuxinator-sample.png">
+
+<link rel="canonical" href="http://zuyunfei.com/2013/08/09/tmuxinator-best-mate-of-tmux/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>tmux最佳伴侣：tmuxinator | Cloud's Blog</title>
+  
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?39acf9b7e1b335eeb122f98224890a9e";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+        <span class="toggle-line toggle-line-first"></span>
+        <span class="toggle-line toggle-line-middle"></span>
+        <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Cloud's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://zuyunfei.com/2013/08/09/tmuxinator-best-mate-of-tmux/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/gaara.png">
+      <meta itemprop="name" content="Yunfei Zu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Cloud's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          tmux最佳伴侣：tmuxinator
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2013-08-09 11:42:30" itemprop="dateCreated datePublished" datetime="2013-08-09T11:42:30+08:00">2013-08-09</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <img data-src="/images/tmuxinator-sample.png" class="">
+
+<p><a href="/2013/06/09/introduction-of-tmux/">先前的博文</a>介绍过tmux，极大的提高了远程登陆linux server的操作效率。但是tmux在系统重启后，所有的tmux session都会被消除，你分好的window pane, 所有的环境设置都没有了。这对于基本不关机的server问题不大，但是开发者如果想在自己的机器上使用tmux, 就不得不面对怎么在系统重启后恢复tmux session的问题。</p>
+<a id="more"></a>
+<p>tmux的快捷键，状态栏，配色等等都是可配置的，而tmux session却不是通过配置文件建立的，而是通过一系列tmux命令来操作的。可以把一系列的tmux操作写入一个shell脚本，每次运行这个脚本来建立相同的session，这就变相的实现了恢复session的功能。当然这需要用户相当了解tmux的命令并花不少经历维护这个脚本，我一直也没有写出一个顺手的tmux脚本，直到发现了<a href="https://github.com/aziz/tmuxinator" target="_blank" rel="noopener">tmuxinator</a>。</p>
+<p>tmuxinator是一个用ruby写的工具，具体功能就是通过YAML文件配置一个tmux设置，tmuxinator根据配置文件运行相应的tmux命令，建立tmux session。</p>
+<p>##tmuxinator的安装和使用<br>tmuxinator依赖与Ruby, 通过gem安装非常方便。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gem install tmuxinator</span><br></pre></td></tr></table></figure>
+<p>tmuxinator 需要用户定义用来打开配置文件的editor，在.bashrc中加入</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> EDITOR=<span class="string">'vim'</span></span><br></pre></td></tr></table></figure>
+<p>tmux的窗口编号默认是从0开始的，而在大部分键盘上主键区，数字键都是按1234567890排列的，切换到0号窗口很不方便，可以在<code>~/.tmux.conf</code>中加入如下两行，让tmux的窗口编号从1开始。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">set-option -g base-index 1</span><br><span class="line">set-window-option -g pane-base-index 1</span><br></pre></td></tr></table></figure>
+<p>常用tmuxiantor操作如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">mux new [PROJECT]            <span class="comment"># 新建一个project </span></span><br><span class="line">mux [PROJECT]                <span class="comment"># 开始一个project配置好的tmux session</span></span><br><span class="line">mux open [PROJECT]           <span class="comment"># 编辑一个project配置</span></span><br><span class="line">mux delete [PROJECT]         <span class="comment"># 删除一个project</span></span><br><span class="line">mux list                     <span class="comment"># 列出所有的project</span></span><br></pre></td></tr></table></figure>
+
+
+<p>##tmuxinator的配置文件</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">name:</span> <span class="string">Tmuxinator</span></span><br><span class="line"><span class="attr">root:</span> <span class="string">~/Code/tmuxinator</span></span><br><span class="line"><span class="attr">socket_name:</span> <span class="string">foo</span> <span class="comment"># Remove to use default socket</span></span><br><span class="line"><span class="attr">pre:</span> <span class="string">sudo</span> <span class="string">/etc/rc.d/mysqld</span> <span class="string">start</span> <span class="comment"># Runs before everything</span></span><br><span class="line"><span class="attr">pre_window:</span> <span class="string">rbenv</span> <span class="string">shell</span> <span class="number">2.0</span><span class="number">.0</span><span class="string">-p247</span> <span class="comment"># Runs in each tab and pane</span></span><br><span class="line"><span class="attr">tmux_options:</span> <span class="string">-v</span> <span class="number">-2</span> <span class="comment"># Pass arguments to tmux</span></span><br><span class="line"><span class="attr">windows:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">editor:</span></span><br><span class="line">      <span class="attr">layout:</span> <span class="string">main-vertical</span></span><br><span class="line">      <span class="attr">panes:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="string">vim</span></span><br><span class="line">        <span class="bullet">-</span> <span class="comment">#empty, will just run plain bash</span></span><br><span class="line">        <span class="bullet">-</span> <span class="string">top</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">shell:</span> <span class="string">git</span> <span class="string">pull</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">database:</span> <span class="string">rails</span> <span class="string">db</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">server:</span> <span class="string">rails</span> <span class="string">s</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">logs:</span> <span class="string">tail</span> <span class="string">-f</span> <span class="string">logs/development.log</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">console:</span> <span class="string">rails</span> <span class="string">c</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">capistrano:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">server:</span> <span class="string">ssh</span> <span class="string">me@myhost</span></span><br></pre></td></tr></table></figure>
+<p>tmuxinator配置文件结构很简单，每个session的配置被看做一个project, 根据需要配置好路径，windowns 和panes就可以工作了。</p>
+<p>其中panes的layout可以是tmux定义的5种标准的layout：</p>
+<ul>
+<li>even-horizontal</li>
+<li>even-vertical</li>
+<li>main-horizontal</li>
+<li>main-vertical</li>
+<li>tiled  </li>
+</ul>
+<p>你可以也<a href="http://stackoverflow.com/questions/9812000/specify-pane-percentage-in-tmuxinator-project/9976282#9976282" target="_blank" rel="noopener">定义自己的layout</a>。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Tools/" rel="tag"># Tools</a>
+              <a href="/tags/linux/" rel="tag"># linux</a>
+              <a href="/tags/tmuxinator/" rel="tag"># tmuxinator</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2013/06/11/cpp-idioms-pimpl/" rel="prev" title="C++ Idioms: Pimpl">
+      <i class="fa fa-chevron-left"></i> C++ Idioms: Pimpl
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2013/08/12/c++11-variadic-templates-tuple/" rel="next" title="C++11: 变参模板和std::tuple">
+      C++11: 变参模板和std::tuple <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Yunfei Zu"
+      src="/images/gaara.png">
+  <p class="site-author-name" itemprop="name">Yunfei Zu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">54</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">42</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/yunfeizu" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;yunfeizu" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.linkedin.com/in/yunfeizu" title="Linkedin → https:&#x2F;&#x2F;www.linkedin.com&#x2F;in&#x2F;yunfeizu" rel="noopener" target="_blank"><i class="fab fa-linkedin fa-fw"></i>Linkedin</a>
+      </span>
+  </div>
+
+
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Yunfei Zu</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<script>
+  var disqus_config = function() {
+    this.page.url = "http://zuyunfei.com/2013/08/09/tmuxinator-best-mate-of-tmux/";
+    this.page.identifier = "2013/08/09/tmuxinator-best-mate-of-tmux/";
+    this.page.title = "tmux最佳伴侣：tmuxinator";
+    };
+  NexT.utils.loadComments(document.querySelector('#disqus_thread'), () => {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: disqus_config
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://yunfeizugithub.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zuyunfei.com","root":"/","scheme":"Gemini","version":"8.0.0-rc.3","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":false,"nav":null,"activeClass":"disqus"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="在安装octogress的时候需要ruby1.9.3, ubuntu 12.04 默认的是1.8, 虽然有1.9.3的源，但是所有的库用的还是1.9.1的，运行octogress的时候出现了很多莫名其妙的错误，用ubuntu自带的rvm安装更是产生无数的问题。求助于goolge, 发现很多讲用ubuntu做ruby on rail开发的都会手动安装rvm和最新版ruby, 但是跟着做了以后，总">
+<meta property="og:type" content="article">
+<meta property="og:title" content="在ubuntu 12.04 上安装ruby">
+<meta property="og:url" content="http://zuyunfei.com/2013/04/01/install-ruby-on-ubuntu/index.html">
+<meta property="og:site_name" content="Cloud&#39;s Blog">
+<meta property="og:description" content="在安装octogress的时候需要ruby1.9.3, ubuntu 12.04 默认的是1.8, 虽然有1.9.3的源，但是所有的库用的还是1.9.1的，运行octogress的时候出现了很多莫名其妙的错误，用ubuntu自带的rvm安装更是产生无数的问题。求助于goolge, 发现很多讲用ubuntu做ruby on rail开发的都会手动安装rvm和最新版ruby, 但是跟着做了以后，总">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2013-04-01T04:03:00.000Z">
+<meta property="article:modified_time" content="2022-11-12T05:20:47.829Z">
+<meta property="article:author" content="Yunfei Zu">
+<meta property="article:tag" content="blog">
+<meta property="article:tag" content=" octopress">
+<meta property="article:tag" content=" unbuntu">
+<meta property="article:tag" content=" ruby">
+<meta property="article:tag" content=" rvm">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://zuyunfei.com/2013/04/01/install-ruby-on-ubuntu/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>在ubuntu 12.04 上安装ruby | Cloud's Blog</title>
+  
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?39acf9b7e1b335eeb122f98224890a9e";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+        <span class="toggle-line toggle-line-first"></span>
+        <span class="toggle-line toggle-line-middle"></span>
+        <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Cloud's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://zuyunfei.com/2013/04/01/install-ruby-on-ubuntu/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/gaara.png">
+      <meta itemprop="name" content="Yunfei Zu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Cloud's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          在ubuntu 12.04 上安装ruby
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2013-04-01 12:03:00" itemprop="dateCreated datePublished" datetime="2013-04-01T12:03:00+08:00">2013-04-01</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Others/" itemprop="url" rel="index"><span itemprop="name">Others</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>  在安装octogress的时候需要ruby1.9.3, ubuntu 12.04 默认的是1.8, 虽然有1.9.3的源，但是所有的库用的还是1.9.1的，运行octogress的时候出现了很多莫名其妙的错误，用ubuntu自带的rvm安装更是产生无数的问题。求助于goolge, 发现很多讲用ubuntu做ruby on rail开发的都会手动安装rvm和最新版ruby, 但是跟着做了以后，总会在某个地方出现问题。最后发现了一篇<a href="http://blog.coolaj86.com/articles/installing-ruby-on-ubuntu-12-04.html" target="_blank" rel="noopener">How to install Ruby (and RVM) on Ubuntu (for technotards)</a>, 终于配置成功了。</p>
+<a id="more"></a>
+
+<p>  这个为了科技白痴(for technotards)写的文档算是我见过的最好的安装文档, 它并不是隐藏了大量细节只给出安装步骤，而是对很多配置和为什么这样做进行了说明，对会容易出错的细节也交代清楚。比如：在介绍了ruby的基本知识开始安装后，便说明ubuntu自带的rvm有问题，如果你已经安装过了，需要完全卸载它，并给出了需要删除的文件的具体位置。我之前手动安装rvm和ruby失败便是因为一些文件没有删除干净。甚至针对对linux并不熟悉的用户，解释如果要拷贝文档里的console命令的话，一定要拷贝命令中换行的反斜线，才能让命令执行正确。看了这个文档后，让人有一种畅快的感觉，折腾了一晚上积累的不爽一下就不见了，看来很有必要学习下怎么把文档写好。下面列出我安装时的操作，算是一个备忘  </p>
+<h3 id="卸载系统默认的ruby和rvm"><a href="#卸载系统默认的ruby和rvm" class="headerlink" title="卸载系统默认的ruby和rvm"></a>卸载系统默认的ruby和rvm</h3><pre><code>sudo apt-get remove --purge ruby-rvm ruby
+sudo rm -rf /usr/share/ruby-rvm /etc/rvmrc /etc/profile.d/rvm.sh
+rm -rf ~/.rvm* ~/.gem/ ~/.bundle</code></pre><h3 id="为了加快安装速度，禁止安装document"><a href="#为了加快安装速度，禁止安装document" class="headerlink" title="为了加快安装速度，禁止安装document"></a>为了加快安装速度，禁止安装document</h3><pre><code>echo &apos;gem: --no-rdoc --no-ri&apos; &gt;&gt; ~/.gemrc</code></pre><h3 id="安装必要的工具和库"><a href="#安装必要的工具和库" class="headerlink" title="安装必要的工具和库"></a>安装必要的工具和库</h3><pre><code>sudo apt-get install -y \
+  git \
+  build-essential \
+  curl \
+  wget</code></pre><p>将rvm的配置加入.bashrc中<br>    echo “[[ -s ‘${HOME}/.rvm/scripts/rvm’ ]] &amp;&amp; source ‘${HOME}/.rvm/scripts/rvm’” &gt;&gt; ~/.bashrc</p>
+<pre><code>sudo apt-get install -y \
+  build-essential \
+  openssl \
+  libreadline6 \
+  libreadline6-dev \
+  curl \
+  git-core \
+  zlib1g \
+  zlib1g-dev \
+  libssl-dev \
+  libyaml-dev \
+  libxml2-dev \
+  libxslt-dev \
+  autoconf \
+  libc6-dev \
+  ncurses-dev \
+  automake \
+  libtool \
+  bison \
+  subversion \
+  pkg-config \
+  libgdbm-dev</code></pre><p>安装sqlite3, ubuntu的sqlite版本太老，不支持SQLite3-FTS, 作者推荐手动安装最新版，但是我试验的结果，对octopress 并不会产生问题，所以这里仍然使用系统自带版本。<br>    sudo apt-get install -y <br>      sqlite3 <br>      libsqlite3-dev</p>
+<h3 id="安装rvm和ruby"><a href="#安装rvm和ruby" class="headerlink" title="安装rvm和ruby"></a>安装rvm和ruby</h3><pre><code>curl -L https://get.rvm.io | bash -s stable --ruby
+
+source ~/.rvm/scripts/rvm
+rvm reload
+rvm use default
+ruby --version </code></pre><h3 id="安装cyaml和bundler"><a href="#安装cyaml和bundler" class="headerlink" title="安装cyaml和bundler"></a>安装cyaml和bundler</h3><pre><code>gem install cyaml --no-ri --no-rdoc
+
+gem install bundler --no-ri --no-rdoc</code></pre>
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%8D%9A%E5%AE%A2/" rel="tag"># 博客</a>
+              <a href="/tags/octopress/" rel="tag"># octopress</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/2013/04/02/closure-and-c-plus-plus-11-lambda/" rel="next" title="closure and c++11 lambda">
+      closure and c++11 lambda <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#卸载系统默认的ruby和rvm"><span class="nav-number">1.</span> <span class="nav-text">卸载系统默认的ruby和rvm</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#为了加快安装速度，禁止安装document"><span class="nav-number">2.</span> <span class="nav-text">为了加快安装速度，禁止安装document</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安装必要的工具和库"><span class="nav-number">3.</span> <span class="nav-text">安装必要的工具和库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安装rvm和ruby"><span class="nav-number">4.</span> <span class="nav-text">安装rvm和ruby</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安装cyaml和bundler"><span class="nav-number">5.</span> <span class="nav-text">安装cyaml和bundler</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Yunfei Zu"
+      src="/images/gaara.png">
+  <p class="site-author-name" itemprop="name">Yunfei Zu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">54</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">42</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/yunfeizu" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;yunfeizu" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.linkedin.com/in/yunfeizu" title="Linkedin → https:&#x2F;&#x2F;www.linkedin.com&#x2F;in&#x2F;yunfeizu" rel="noopener" target="_blank"><i class="fab fa-linkedin fa-fw"></i>Linkedin</a>
+      </span>
+  </div>
+
+
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Yunfei Zu</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<script>
+  var disqus_config = function() {
+    this.page.url = "http://zuyunfei.com/2013/04/01/install-ruby-on-ubuntu/";
+    this.page.identifier = "2013/04/01/install-ruby-on-ubuntu/";
+    this.page.title = "在ubuntu 12.04 上安装ruby";
+    };
+  NexT.utils.loadComments(document.querySelector('#disqus_thread'), () => {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: disqus_config
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://yunfeizugithub.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  });
+</script>
+
+</body>
+</html>

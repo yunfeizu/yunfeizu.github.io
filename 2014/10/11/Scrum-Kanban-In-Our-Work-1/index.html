@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zuyunfei.com","root":"/","scheme":"Gemini","version":"8.0.0-rc.3","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":false,"nav":null,"activeClass":"disqus"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Kaizen 改善中国人如果第一次从老外嘴里听到Kaizen，一定会大呼：原来是汉语啊！但其实这是个日语词汇，虽然汉字写出来就是“改善”，但却地地道道是日本人提出来的管理概念，并随着日本企业上世纪七八十年代的大发展而影响全球。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Scrum &amp; Kanban In Our Work ( 1 )">
+<meta property="og:url" content="http://zuyunfei.com/2014/10/11/Scrum-Kanban-In-Our-Work-1/index.html">
+<meta property="og:site_name" content="Cloud&#39;s Blog">
+<meta property="og:description" content="Kaizen 改善中国人如果第一次从老外嘴里听到Kaizen，一定会大呼：原来是汉语啊！但其实这是个日语词汇，虽然汉字写出来就是“改善”，但却地地道道是日本人提出来的管理概念，并随着日本企业上世纪七八十年代的大发展而影响全球。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://zuyunfei.com/2014/10/11/Scrum-Kanban-In-Our-Work-1/kaizen.jpg">
+<meta property="article:published_time" content="2014-10-11T07:47:10.000Z">
+<meta property="article:modified_time" content="2022-11-12T05:20:47.838Z">
+<meta property="article:author" content="Yunfei Zu">
+<meta property="article:tag" content="Agile">
+<meta property="article:tag" content=" Scrum">
+<meta property="article:tag" content=" Lean">
+<meta property="article:tag" content=" Kanban">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://zuyunfei.com/2014/10/11/Scrum-Kanban-In-Our-Work-1/kaizen.jpg">
+
+<link rel="canonical" href="http://zuyunfei.com/2014/10/11/Scrum-Kanban-In-Our-Work-1/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Scrum & Kanban In Our Work ( 1 ) | Cloud's Blog</title>
+  
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?39acf9b7e1b335eeb122f98224890a9e";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+        <span class="toggle-line toggle-line-first"></span>
+        <span class="toggle-line toggle-line-middle"></span>
+        <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Cloud's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://zuyunfei.com/2014/10/11/Scrum-Kanban-In-Our-Work-1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/gaara.png">
+      <meta itemprop="name" content="Yunfei Zu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Cloud's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Scrum & Kanban In Our Work ( 1 )
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2014-10-11 15:47:10" itemprop="dateCreated datePublished" datetime="2014-10-11T15:47:10+08:00">2014-10-11</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Project/" itemprop="url" rel="index"><span itemprop="name">Project</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <img data-src="/2014/10/11/Scrum-Kanban-In-Our-Work-1/kaizen.jpg" class="" title="KAIZEN">
+<h1 id="Kaizen-改善"><a href="#Kaizen-改善" class="headerlink" title="Kaizen 改善"></a>Kaizen 改善</h1><p>中国人如果第一次从老外嘴里听到Kaizen，一定会大呼：原来是汉语啊！但其实这是个日语词汇，虽然汉字写出来就是“改善”，但却地地道道是日本人提出来的管理概念，并随着日本企业上世纪七八十年代的大发展而影响全球。</p>
+<a id="more"></a>
+<p>按照<a href="https://en.wikipedia.org/wiki/Kaizen" target="_blank" rel="noopener">维基百科</a>解释，Kaizen就是渐进式的不断提高、持续改善的意思。日本企业将这个概念上升到指导思想和文化层面，贯彻在企业的各级生产、经营和管理中，是大批日本企业走向强大的秘籍之一。虽然日本经济光环不再，但是沉积下来的科学管理方法却仍值得我们学习。有兴趣的推荐阅读<a href="http://www.amazon.cn/%E6%94%B9%E5%96%84-%E6%97%A5%E6%9C%AC%E4%BC%81%E4%B8%9A%E6%88%90%E5%8A%9F%E7%9A%84%E5%A5%A5%E7%A7%98-%E4%BB%8A%E4%BA%95%E6%AD%A3%E6%98%8E/dp/B003JKKG8O" target="_blank" rel="noopener">《改善:日本企业成功的奥秘》</a>。</p>
+<p>本文提到Kaizen，正是因为其思想完美贴合Agile的宗旨，通过快速灵活的反馈，不断的改进软件开发的计划和流程，以适应快速变化的需求。当前项目的开发走到了新的阶段，是时候回顾和调整团队的工作方式了。</p>
+<h1 id="Scrum-In-Daisy"><a href="#Scrum-In-Daisy" class="headerlink" title="Scrum In Daisy"></a>Scrum In Daisy</h1><p>Daisy project 经过长达两年的开发，终于临近LFI(Last Feature In)。在Daisy的开发过程中，整个研发团队被划分为各个Scrum team，全面拥抱敏捷。特别是上海的两个Scrum Team，由DE和QE混合组成，根据不同的任务，调整非常灵活。面对多次大规模的需求和设计变更，仍然保证了进度和质量的平衡，非常好的完成了开发任务。在任务最紧急，也是Scrum发挥了最大效力的几个Sprint，我留下了几篇记录，现在看来仍热血沸腾。</p>
+<ul>
+<li><a href="/2013/08/23/end-of-sprint-ff/">Scrum Sprint Fast&amp;Furious</a></li>
+<li><a href="/2013/09/25/scrum-sprint-final-fantasy/">Scrum Sprint Final Fantasy</a></li>
+<li><a href="/2013/11/12/scrum-sprint-lost-queen/">Scrum Sprint “Lost Queen”</a></li>
+<li><a href="/2013/12/10/sprint-wp415/">Scrum Sprint WP415</a></li>
+</ul>
+<h2 id="LFI以后的工作变化"><a href="#LFI以后的工作变化" class="headerlink" title="LFI以后的工作变化"></a>LFI以后的工作变化</h2><ul>
+<li><p><strong>团队角色发生改变：</strong><br>LFI之后团队从开发流程要转向verification流程，不仅原有的QE要担当Final Verification的主要任务，所有的DE也要参与迭代测试。</p>
+</li>
+<li><p><strong>Task类型发生变化：</strong><br>Task类型从开发流程的user story 和 technique task变为Exploratory Test, Test Case, PR, document等。</p>
+</li>
+<li><p><strong>随时可能追加和修改Task：</strong><br>产品需求虽然已经固定，测试specification一旦确定，也不会有大的更改，但是随着测试的深入，会有新的PR(Problem Report)被提出，Test Case也会经常需要更新。 </p>
+</li>
+<li><p><strong>很多Task不可预估：</strong><br>测试任务和Bug修复任务的偶然性更大，经常会有设备故障或新的bug被发现等意外情况。</p>
+</li>
+<li><p><strong>Task优先级随时可能调整：</strong><br>整个Verification阶段就是各级别测试和 PR fixing 的迭代过程，需要不停的评估PR的风险性和重要性，调整任务优先级。</p>
+</li>
+</ul>
+<h2 id="Scrum在LFI后需要调整"><a href="#Scrum在LFI后需要调整" class="headerlink" title="Scrum在LFI后需要调整"></a>Scrum在LFI后需要调整</h2><p>Scrum的工作方式和特点可以归纳为：</p>
+<ul>
+<li>把组织拆分成小规模的、跨功能的自组织团队</li>
+<li>把工作拆分成一系列小而具体的交付物。按优先级排序，估算每项任务的相对工作量</li>
+<li>把时间拆分成固定大小的短迭代，在每个迭代结束时对基本可以交付的代码进行演示</li>
+<li>在每个迭代结束后跟客户一起检查发布目标，并据此优化发布计划，更新任务优先级</li>
+<li>每个迭代结束后进行回顾，进行过程优化</li>
+</ul>
+<p>不难发现虽然Scrum具备很大的灵活性，但是仍然需要在sprint开始前中对任务进行规划，拥有相对稳定的team backlog, sprint的范围也应该固定，以保证团队开发过程的平衡，达到效率最大化，而所有的回顾和调整应该在Sprint结束后进行。面对LFI后更多变的工作内容，Scrum就显得不顺手了。无疑是时候对现有流程和工作方式进行调整了。</p>
+<h3 id="未完待续…"><a href="#未完待续…" class="headerlink" title="未完待续….."></a>未完待续…..</h3><p><a href="/2014/10/20/Scrum-Kanban-In-Our-Work-2/">Scrum &amp; Kanban In Our Work ( 2 )</a><br><a href="/2014/10/28/Scrum-Kanban-In-Our-Work-3/">Scrum &amp; Kanban In Our Work ( 3 )</a></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Agile/" rel="tag"># Agile</a>
+              <a href="/tags/Scrum/" rel="tag"># Scrum</a>
+              <a href="/tags/Kanban/" rel="tag"># Kanban</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2014/09/21/DICOM-Class-101-1-Introduction/" rel="prev" title="DICOM 1: Introduction">
+      <i class="fa fa-chevron-left"></i> DICOM 1: Introduction
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2014/10/20/Scrum-Kanban-In-Our-Work-2/" rel="next" title="Scrum & Kanban In Our Work ( 2 ) ">
+      Scrum & Kanban In Our Work ( 2 )  <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Kaizen-改善"><span class="nav-number">1.</span> <span class="nav-text">Kaizen 改善</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Scrum-In-Daisy"><span class="nav-number">2.</span> <span class="nav-text">Scrum In Daisy</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#LFI以后的工作变化"><span class="nav-number">2.1.</span> <span class="nav-text">LFI以后的工作变化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Scrum在LFI后需要调整"><span class="nav-number">2.2.</span> <span class="nav-text">Scrum在LFI后需要调整</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#未完待续…"><span class="nav-number">2.2.1.</span> <span class="nav-text">未完待续…..</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Yunfei Zu"
+      src="/images/gaara.png">
+  <p class="site-author-name" itemprop="name">Yunfei Zu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">54</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">42</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/yunfeizu" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;yunfeizu" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.linkedin.com/in/yunfeizu" title="Linkedin → https:&#x2F;&#x2F;www.linkedin.com&#x2F;in&#x2F;yunfeizu" rel="noopener" target="_blank"><i class="fab fa-linkedin fa-fw"></i>Linkedin</a>
+      </span>
+  </div>
+
+
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Yunfei Zu</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<script>
+  var disqus_config = function() {
+    this.page.url = "http://zuyunfei.com/2014/10/11/Scrum-Kanban-In-Our-Work-1/";
+    this.page.identifier = "2014/10/11/Scrum-Kanban-In-Our-Work-1/";
+    this.page.title = "Scrum & Kanban In Our Work ( 1 )";
+    };
+  NexT.utils.loadComments(document.querySelector('#disqus_thread'), () => {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: disqus_config
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://yunfeizugithub.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  });
+</script>
+
+</body>
+</html>

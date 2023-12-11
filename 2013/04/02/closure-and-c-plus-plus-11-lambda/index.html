@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zuyunfei.com","root":"/","scheme":"Gemini","version":"8.0.0-rc.3","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":false,"nav":null,"activeClass":"disqus"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="##What is “Closure”In computer science, a closure (also lexical closure or function closure) is a function or reference to a function together with a referencing environment—a table storing a referenc">
+<meta property="og:type" content="article">
+<meta property="og:title" content="closure and c++11 lambda">
+<meta property="og:url" content="http://zuyunfei.com/2013/04/02/closure-and-c-plus-plus-11-lambda/index.html">
+<meta property="og:site_name" content="Cloud&#39;s Blog">
+<meta property="og:description" content="##What is “Closure”In computer science, a closure (also lexical closure or function closure) is a function or reference to a function together with a referencing environment—a table storing a referenc">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2013-04-02T14:51:00.000Z">
+<meta property="article:modified_time" content="2022-11-12T05:20:47.829Z">
+<meta property="article:author" content="Yunfei Zu">
+<meta property="article:tag" content="C++">
+<meta property="article:tag" content=" C++11">
+<meta property="article:tag" content=" C++0x">
+<meta property="article:tag" content=" closure">
+<meta property="article:tag" content=" 闭包">
+<meta property="article:tag" content=" lambda">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://zuyunfei.com/2013/04/02/closure-and-c-plus-plus-11-lambda/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>closure and c++11 lambda | Cloud's Blog</title>
+  
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?39acf9b7e1b335eeb122f98224890a9e";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+        <span class="toggle-line toggle-line-first"></span>
+        <span class="toggle-line toggle-line-middle"></span>
+        <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Cloud's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://zuyunfei.com/2013/04/02/closure-and-c-plus-plus-11-lambda/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/gaara.png">
+      <meta itemprop="name" content="Yunfei Zu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Cloud's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          closure and c++11 lambda
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2013-04-02 22:51:00" itemprop="dateCreated datePublished" datetime="2013-04-02T22:51:00+08:00">2013-04-02</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/C/" itemprop="url" rel="index"><span itemprop="name">C++</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>##What is “Closure”<br>In computer science, a closure (also lexical closure or function closure) is a function or reference to a function together with a referencing environment—a table storing a reference to each of the non-local variables (also called free variables) of that function. A closure unlike a plain function pointer allows a function to access those non-local variables even when invoked outside of its immediate lexical scope.</p>
+<a id="more"></a>
+
+<p>an example in python 3:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">counter</span><span class="params">()</span>:</span></span><br><span class="line">    x = <span class="number">0</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">increment</span><span class="params">(y)</span>:</span></span><br><span class="line">        <span class="keyword">nonlocal</span> x</span><br><span class="line">        x += y</span><br><span class="line">        print(x)</span><br><span class="line">    <span class="keyword">return</span> increment</span><br></pre></td></tr></table></figure>
+
+<p>The closure returned by counter can be assigned to a variable:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">counter1_increment = counter()</span><br><span class="line">counter2_increment = counter()</span><br></pre></td></tr></table></figure>
+
+<p>Invoking increment through the closures will give the following results:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">counter1_increment(<span class="number">1</span>)    <span class="comment"># prints 1</span></span><br><span class="line">counter1_increment(<span class="number">7</span>)    <span class="comment"># prints 8</span></span><br><span class="line">counter2_increment(<span class="number">1</span>)    <span class="comment"># prints 1</span></span><br><span class="line">counter1_increment(<span class="number">1</span>)    <span class="comment"># prints 9</span></span><br></pre></td></tr></table></figure>
+
+<p>The closure and anonymous function are distinct concepts. A closure retains a reference to the environment at the time it was created (for example, to the current value of a local variable in the enclosing scope) while a generic anonymous function need not do this.</p>
+<h2 id="lambda-of-C-11"><a href="#lambda-of-C-11" class="headerlink" title="lambda of C++11"></a>lambda of C++11</h2><p>C++11 with the lambda expression partially support closure – the programmer chooses whether the lambda makes copies of the captured stack variables or only references them. References will cause UndefinedBehavior if the lambda escapes the scope it was created in.  That is because C++ run-time memory model allocates all local variables on a linear stack. A function’s local variables are deallocated when the function returns. However, a closure requires that the free variables it references survive the enclosing function’s execution. So typically, languages that natively support closures also use garbage collection.</p>
+<p>###basic structure of c++11 lambda expression:</p>
+<pre><code>[capture](parameters)-&gt;return_type {body}</code></pre><p>###variable capture</p>
+<pre><code>[] Capture nothing (or, a scorched earth strategy?)
+[&amp;]    Capture any referenced variable by reference
+[=]    Capture any referenced variable by making a copy
+[x, &amp;y] Capture x by making a copy, but capture y by reference
+[=, &amp;foo] Capture any referenced variable by making a copy, but capture variable foo by reference
+[bar] Capture bar by making a copy; don&apos;t copy anything else
+[this] Capture the this pointer of the enclosing class</code></pre><p>###Storing Closures<br>Closure types not specified, but two easy ways to store closures:<br>####auto :</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">auto</span> multipleOf5 = [](<span class="keyword">long</span> x) &#123; <span class="keyword">return</span> x % <span class="number">5</span> == <span class="number">0</span>; &#125;;</span><br><span class="line"><span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">long</span>&gt; vl; </span><br><span class="line">…</span><br><span class="line">vl.erase(<span class="built_in">std</span>::remove_if(vl.begin(), vl.end(), multipleOf5), vl.end());</span><br></pre></td></tr></table></figure>
+
+<p>####std::function:</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">std</span>::function&lt;<span class="keyword">bool</span>(<span class="keyword">long</span>)&gt; multipleOf5 =  <span class="comment">// see next page for syn</span></span><br><span class="line">[](<span class="keyword">long</span> x) &#123; <span class="keyword">return</span> x % <span class="number">5</span> == <span class="number">0</span>; &#125;;</span><br><span class="line">…</span><br><span class="line">vl.erase(<span class="built_in">std</span>::remove_if(vl.begin(), vl.end(), multipleOf5), vl.end());</span><br></pre></td></tr></table></figure>
+
+<p>##Typical Usages</p>
+<h4 id="1-Facilitate-STL-algorithm"><a href="#1-Facilitate-STL-algorithm" class="headerlink" title="1. Facilitate STL algorithm"></a>1. Facilitate STL algorithm</h4><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; v; </span><br><span class="line">… </span><br><span class="line"><span class="keyword">auto</span> it = <span class="built_in">std</span>::find_if(v.cbegin(), v.cend(), </span><br><span class="line">                       [](<span class="keyword">int</span> i) &#123; <span class="keyword">return</span> i &gt; <span class="number">0</span> &amp;&amp; i &lt; <span class="number">10</span>; &#125; );</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="keyword">char</span> s[]=<span class="string">"Hello World!"</span>;</span><br><span class="line">  <span class="keyword">int</span> Uppercase = <span class="number">0</span>; <span class="comment">//modified by the lambda</span></span><br><span class="line">  for_each(s, s+<span class="keyword">sizeof</span>(s), [&amp;Uppercase] (<span class="keyword">char</span> c) &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">isupper</span>(c)) &#123;</span><br><span class="line">      Uppercase++;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;);</span><br><span class="line">  <span class="built_in">cout</span>&lt;&lt; Uppercase&lt;&lt;<span class="string">" uppercase letters in: "</span>&lt;&lt; s&lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="2-Making-Delegates-with-Lambdas"><a href="#2-Making-Delegates-with-Lambdas" class="headerlink" title="2. Making Delegates with Lambdas"></a>2. Making Delegates with Lambdas</h4><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">DeliveryHistoryService</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  DeliveryHistoryService(<span class="built_in">std</span>::function&lt;TreatmentProgress(<span class="built_in">std</span>::<span class="built_in">string</span>)&gt; finder);</span><br><span class="line"></span><br><span class="line">  ...</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">TpiTreatmentService</span> &#123;</span></span><br><span class="line">  ...</span><br><span class="line"></span><br><span class="line">    <span class="function">TreatmentProgress <span class="title">treatmentProgress</span><span class="params">(<span class="built_in">std</span>::<span class="built_in">string</span> treatementId)</span></span>;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">.....</span><br><span class="line">TpiTreatmentService treatmentService;</span><br><span class="line">DeliveryHitoryService([&amp;](<span class="built_in">std</span>::<span class="built_in">string</span> id)&#123;<span class="keyword">return</span> treatmentService.treatmentProgress(id)&#125;);</span><br></pre></td></tr></table></figure>
+
+<h4 id="3-Simplify-the-unit-test"><a href="#3-Simplify-the-unit-test" class="headerlink" title="3. Simplify the unit test"></a>3. Simplify the unit test</h4><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">testDelieveryHistoryService</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  . . .    </span><br><span class="line">    TreatmentProgress tmpTreatmentProgress;</span><br><span class="line">  DeliveryHistoryService([&amp;](<span class="built_in">std</span>::<span class="built_in">string</span>)&#123;<span class="keyword">return</span> tmpTreatmentProgress&#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<h4 id="4-Simplify-RAII"><a href="#4-Simplify-RAII" class="headerlink" title="4. Simplify RAII"></a>4. Simplify RAII</h4><p><a href="http://en.wikipedia.org/wiki/Resource_acquisition_is_initialization" target="_blank" rel="noopener">RAII</a> stands for Resource Acquisition Is Initialization,  was invented by Bjarne Stroustrup[2] to deal with resource allocation and deallocation in C++. The idea is that you want to acquire resources during the initialization of objects, i.e. as soon as possible, so that you cannot accidentally use an uninitialized object, and also that you want your object to automatically release the resource upon destruction. One of the main advantages of this pattern is that your resources will always be released, even if there are errors or exceptions between when your object is initialized and your object goes out of scope.</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">FileCloser</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  FileCloser(<span class="keyword">char</span>* fname)</span><br><span class="line">  &#123;</span><br><span class="line">    fp = fopen(fname, <span class="string">"r"</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">ReadLine</span><span class="params">(<span class="keyword">char</span>* line, <span class="keyword">int</span> count)</span></span></span><br><span class="line"><span class="function">  </span>&#123;</span><br><span class="line">    fgets(line, count, fp);</span><br><span class="line">  &#125;</span><br><span class="line">  ~FileCloser()</span><br><span class="line">  &#123;</span><br><span class="line">    fclose(fp);</span><br><span class="line">  &#125;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">  FileCloser() &#123; &#125;</span><br><span class="line">  FILE* fp;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span>* argv[])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="function">FileCloser <span class="title">fc</span><span class="params">(<span class="string">"test.txt"</span>)</span></span>;</span><br><span class="line">  <span class="keyword">char</span> line[<span class="number">100</span>];</span><br><span class="line">  fc.ReadLine(line, <span class="number">100</span>);</span><br><span class="line">  <span class="built_in">cout</span> &lt;&lt; line &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span>* argv[])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  FILE* fp = fopen(<span class="string">"test.txt"</span>, <span class="string">"r"</span>);</span><br><span class="line">  <span class="function"><span class="built_in">shared_ptr</span>&lt;<span class="keyword">void</span>&gt; <span class="title">fileReleaser</span><span class="params">(fp, [](FILE* fp) &#123; fclose(fp); &#125;)</span></span>;</span><br><span class="line">  <span class="keyword">char</span> line[<span class="number">100</span>];</span><br><span class="line">  fgets(line, <span class="number">100</span>, fp);</span><br><span class="line">  <span class="built_in">cout</span> &lt;&lt; line &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">  <span class="keyword">throw</span>;</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ScopeGuard</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  <span class="function"><span class="keyword">explicit</span> <span class="title">ScopeGuard</span><span class="params">(<span class="built_in">std</span>::function&lt;<span class="keyword">void</span>()&gt; onExitScope)</span></span></span><br><span class="line">    : onExitScope_(onExitScope), dismissed_(false)</span><br><span class="line">  &#123; &#125;</span><br><span class="line"></span><br><span class="line">  ~ScopeGuard()</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="keyword">if</span>(!dismissed_) &#123;</span><br><span class="line">      onExitScope_();</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">Dismiss</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    dismissed_ = <span class="literal">true</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">  <span class="built_in">std</span>::function&lt;<span class="keyword">void</span>()&gt; onExitScope_;</span><br><span class="line">  <span class="keyword">bool</span> dismissed_;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>: <span class="comment">// noncopyable</span></span><br><span class="line">  ScopeGuard(ScopeGuard <span class="keyword">const</span>&amp;);</span><br><span class="line">  ScopeGuard&amp; <span class="keyword">operator</span>=(ScopeGuard <span class="keyword">const</span>&amp;);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">HANDLE h = CreateFile(...);</span><br><span class="line"><span class="function">ScopeGuard <span class="title">onExit</span><span class="params">([&amp;] &#123; CloseHandle(h); &#125;)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">ScopeGuard <span class="title">onFailureRollback</span><span class="params">([&amp;] &#123; <span class="comment">/* rollback */</span> &#125;)</span></span>;</span><br><span class="line">... <span class="comment">// do something that could fail</span></span><br><span class="line">onFailureRollback.Dismiss();</span><br></pre></td></tr></table></figure>
+
+
+
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/C/" rel="tag"># C++</a>
+              <a href="/tags/C-11/" rel="tag"># C++11</a>
+              <a href="/tags/Learning-Circle/" rel="tag"># Learning Circle</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2013/04/01/install-ruby-on-ubuntu/" rel="prev" title="在ubuntu 12.04 上安装ruby">
+      <i class="fa fa-chevron-left"></i> 在ubuntu 12.04 上安装ruby
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2013/04/03/c-plus-plus-11-learning-cycle-start/" rel="next" title="c++11 learning circle start">
+      c++11 learning circle start <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#lambda-of-C-11"><span class="nav-number">1.</span> <span class="nav-text">lambda of C++11</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-Facilitate-STL-algorithm"><span class="nav-number">1.0.1.</span> <span class="nav-text">1. Facilitate STL algorithm</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-Making-Delegates-with-Lambdas"><span class="nav-number">1.0.2.</span> <span class="nav-text">2. Making Delegates with Lambdas</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-Simplify-the-unit-test"><span class="nav-number">1.0.3.</span> <span class="nav-text">3. Simplify the unit test</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-Simplify-RAII"><span class="nav-number">1.0.4.</span> <span class="nav-text">4. Simplify RAII</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Yunfei Zu"
+      src="/images/gaara.png">
+  <p class="site-author-name" itemprop="name">Yunfei Zu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">54</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">42</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/yunfeizu" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;yunfeizu" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.linkedin.com/in/yunfeizu" title="Linkedin → https:&#x2F;&#x2F;www.linkedin.com&#x2F;in&#x2F;yunfeizu" rel="noopener" target="_blank"><i class="fab fa-linkedin fa-fw"></i>Linkedin</a>
+      </span>
+  </div>
+
+
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Yunfei Zu</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<script>
+  var disqus_config = function() {
+    this.page.url = "http://zuyunfei.com/2013/04/02/closure-and-c-plus-plus-11-lambda/";
+    this.page.identifier = "2013/04/02/closure-and-c-plus-plus-11-lambda/";
+    this.page.title = "closure and c++11 lambda";
+    };
+  NexT.utils.loadComments(document.querySelector('#disqus_thread'), () => {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: disqus_config
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://yunfeizugithub.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  });
+</script>
+
+</body>
+</html>

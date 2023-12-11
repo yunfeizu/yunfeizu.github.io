@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zuyunfei.com","root":"/","scheme":"Gemini","version":"8.0.0-rc.3","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":false,"nav":null,"activeClass":"disqus"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="我们最近做的项目是和多方合作，系统依赖的很多程序和设置都来自第三方，系统的运行环境全都做在了一块硬盘里。从我们拿到这块硬盘起系统的运行就没有正常过。经过多日的调试，可以判断出是依赖的一些库和配置文件有错误，导致软件运行异常。多次协调对方也不愿意提供更多关于修复安装和配置的信息（当然可能他们也不知道）。项目开始时没有人留意，出了事故才发现，整个项目的开发过程中，能运行系统的环境竟然在唯一的一块硬">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux下使用dd命令备份硬盘">
+<meta property="og:url" content="http://zuyunfei.com/2015/06/04/linux-dd/index.html">
+<meta property="og:site_name" content="Cloud&#39;s Blog">
+<meta property="og:description" content="我们最近做的项目是和多方合作，系统依赖的很多程序和设置都来自第三方，系统的运行环境全都做在了一块硬盘里。从我们拿到这块硬盘起系统的运行就没有正常过。经过多日的调试，可以判断出是依赖的一些库和配置文件有错误，导致软件运行异常。多次协调对方也不愿意提供更多关于修复安装和配置的信息（当然可能他们也不知道）。项目开始时没有人留意，出了事故才发现，整个项目的开发过程中，能运行系统的环境竟然在唯一的一块硬">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://zuyunfei.com/2015/06/04/linux-dd/clonedisk.png">
+<meta property="article:published_time" content="2015-06-04T06:29:26.000Z">
+<meta property="article:modified_time" content="2022-11-12T05:20:47.860Z">
+<meta property="article:author" content="Yunfei Zu">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content=" dd">
+<meta property="article:tag" content=" 备份磁盘">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://zuyunfei.com/2015/06/04/linux-dd/clonedisk.png">
+
+<link rel="canonical" href="http://zuyunfei.com/2015/06/04/linux-dd/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Linux下使用dd命令备份硬盘 | Cloud's Blog</title>
+  
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?39acf9b7e1b335eeb122f98224890a9e";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+        <span class="toggle-line toggle-line-first"></span>
+        <span class="toggle-line toggle-line-middle"></span>
+        <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Cloud's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://zuyunfei.com/2015/06/04/linux-dd/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/gaara.png">
+      <meta itemprop="name" content="Yunfei Zu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Cloud's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Linux下使用dd命令备份硬盘
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2015-06-04 14:29:26" itemprop="dateCreated datePublished" datetime="2015-06-04T14:29:26+08:00">2015-06-04</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <img data-src="/2015/06/04/linux-dd/clonedisk.png" class="" title="Clone Disk">
+
+<p>我们最近做的项目是和多方合作，系统依赖的很多程序和设置都来自第三方，系统的运行环境全都做在了一块硬盘里。从我们拿到这块硬盘起系统的运行就没有正常过。经过多日的调试，可以判断出是依赖的一些库和配置文件有错误，导致软件运行异常。多次协调对方也不愿意提供更多关于修复安装和配置的信息（当然可能他们也不知道）。项目开始时没有人留意，出了事故才发现，整个项目的开发过程中，能运行系统的环境竟然在唯一的一块硬盘上。简直是这辈子最苦逼的开发体验，所有人都很重视，所有领导都每天询问，各种高级工程师秒回你的邮件。但是…但是所有的细节都是秘密，所有问实现，问原理，求指导的问题都不正面回答，要求一个纯净的可用的硬盘也没人答复，所有人都等着你探索黑盒子里的秘密……</p>
+<p>当然我是幸运的，最后通过其他途径找到一台还能运行的旧版设备，使用硬盘对拷的办法，在一块新的硬盘上克隆了全部运行环境，基于这个环境才搭起了系统。</p>
+<a id="more"></a>
+
+<p>系统备份和恢复工具选择很多，Windows下的各种一键复原，Mac os下的高大上的Time Machine，Linux下也有Clonezilla这样的全能选手。当然不求助第三方软件，最基本的linux dd 命令也能完成这些功能。这一次紧急情况下，正是这个在只有五寸屏的PowerPC Linux上也有的命令，救了大家一命。</p>
+<h2 id="dd命令"><a href="#dd命令" class="headerlink" title="dd命令"></a>dd命令</h2><p>dd是Unix/Linux下转换和复制文件的命令，名字和用法都稍显怪异，<a href="https://en.wikipedia.org/wiki/Dd_%28Unix%29" target="_blank" rel="noopener">据说</a>来源于IBM的Job Control Language，意为Data Description。<br>dd命令秉承Unix哲学，专注文件复制和以及复制过程中的格式转换。但是类Unix操作系统下，万物皆文件，dd命令可以像对待普通文件一样，操作硬件的设备驱动和特殊设备文件等资源，这就赋予了dd命令各种不同的用途：驱动器性能测试，数据恢复，磁盘擦除，修复引导记录……</p>
+<h2 id="磁盘备份"><a href="#磁盘备份" class="headerlink" title="磁盘备份"></a>磁盘备份</h2><p>使用fdisk 先查看磁盘分区，找到硬盘的位置。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo  fdisk -u -l</span><br></pre></td></tr></table></figure>
+<p>我的情况是需要用一块硬盘完全克隆另一块，只需要指明输入输出的硬盘文件路径就可以了。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo dd if&#x3D;&#x2F;dev&#x2F;sda of&#x3D;&#x2F;dev&#x2F;sdb</span><br></pre></td></tr></table></figure>
+<p>也可以将磁盘备份到image文件。需要注意的是，dd命令是按照文件块操作，如果不指明块的大小和数量，dd命令会对全部硬盘进行复制，并不会跳过磁盘未使用的空间。一定要确保目标文件比原来的磁盘文件大。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo dd if&#x3D;&#x2F;dev&#x2F;sda of&#x3D;~&#x2F;disk1.img</span><br></pre></td></tr></table></figure>
+<p>一般情况下，对image文件压缩是更有效的方法。大部分压缩算法会把空白部分完全压缩，只留下标记，对只使用了很少的磁盘文件，可以得到很好的压缩比。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo dd if&#x3D;&#x2F;dev&#x2F;sda | gzip &gt; disk.img.gz</span><br><span class="line">sudo dd if&#x3D;&#x2F;dev&#x2F;sda | bzip2 &gt; disk.img.bz2</span><br></pre></td></tr></table></figure>
+<p>需要恢复时，一样的解压拷贝</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gzip -dc &#x2F;disk.img.gz | dd of&#x3D;&#x2F;dev&#x2F;sda</span><br></pre></td></tr></table></figure>
+
+<h2 id="显示dd进度"><a href="#显示dd进度" class="headerlink" title="显示dd进度"></a>显示dd进度</h2><p>dd命令执行相当的耗时，我100G的硬盘大概用了2个小时，期间dd进程并不反馈任何信息，对用户来说是相当痛苦的等待。其实查看dd的help信息，可以发现如果dd进程收到SIGSUR1 signal，就会在console打印出dd的当前状态，help中也给出了示例的脚本。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">$ dd --<span class="built_in">help</span></span><br><span class="line">......</span><br><span class="line">Note that sending a SIGUSR1 signal to a running `dd<span class="string">' process makes it</span></span><br><span class="line"><span class="string">print to standard error the number of records read and written so far,</span></span><br><span class="line"><span class="string">then to resume copying.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">  $ dd if=/dev/zero of=/dev/null&amp; pid=$!</span></span><br><span class="line"><span class="string">  $ kill -USR1 $pid; sleep 1; kill $pid</span></span><br><span class="line"><span class="string">  10899206+0 records in</span></span><br><span class="line"><span class="string">  10899206+0 records out</span></span><br><span class="line"><span class="string">......</span></span><br></pre></td></tr></table></figure>
+
+<p>如果要定时更新状态，可以配合watch命令</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo watch -n 5 pkill -USR1 ^dd$</span><br></pre></td></tr></table></figure>
+<p>每隔5秒钟打印dd的信息。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">208485885+0 records in</span><br><span class="line">208485884+0 records out</span><br><span class="line">106744772608 bytes transferred in 9456.434242 seconds (11288057 bytes&#x2F;sec)</span><br><span class="line">208639230+0 records in</span><br><span class="line">208639229+0 records out</span><br><span class="line">106823285248 bytes transferred in 9461.445863 seconds (11290376 bytes&#x2F;sec)</span><br><span class="line">208763265+0 records in</span><br><span class="line">208763264+0 records out</span><br><span class="line">106886791168 bytes transferred in 9466.455442 seconds (11291110 bytes&#x2F;se</span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Linux/" rel="tag"># Linux</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2015/05/21/backup-sublime-settings/" rel="prev" title="同步sublime设置">
+      <i class="fa fa-chevron-left"></i> 同步sublime设置
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2015/07/13/sed-in-shell-3/" rel="next" title="Sed - 3：高级功能">
+      Sed - 3：高级功能 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#dd命令"><span class="nav-number">1.</span> <span class="nav-text">dd命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#磁盘备份"><span class="nav-number">2.</span> <span class="nav-text">磁盘备份</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#显示dd进度"><span class="nav-number">3.</span> <span class="nav-text">显示dd进度</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Yunfei Zu"
+      src="/images/gaara.png">
+  <p class="site-author-name" itemprop="name">Yunfei Zu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">54</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">42</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/yunfeizu" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;yunfeizu" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.linkedin.com/in/yunfeizu" title="Linkedin → https:&#x2F;&#x2F;www.linkedin.com&#x2F;in&#x2F;yunfeizu" rel="noopener" target="_blank"><i class="fab fa-linkedin fa-fw"></i>Linkedin</a>
+      </span>
+  </div>
+
+
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Yunfei Zu</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<script>
+  var disqus_config = function() {
+    this.page.url = "http://zuyunfei.com/2015/06/04/linux-dd/";
+    this.page.identifier = "2015/06/04/linux-dd/";
+    this.page.title = "Linux下使用dd命令备份硬盘";
+    };
+  NexT.utils.loadComments(document.querySelector('#disqus_thread'), () => {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: disqus_config
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://yunfeizugithub.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zuyunfei.com","root":"/","scheme":"Gemini","version":"8.0.0-rc.3","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":false,"nav":null,"activeClass":"disqus"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="万万没想到，有一天也会沦落到在一台4G内存的Win7笔记本上搞linux编程，还我的16核Z600……好吧，抱怨也是没有用的，和销售人员一样型号的13寸笔记本，标志着我的coding生涯从此全面进入虚拟机和SSH时代。 先不说外接键盘、鼠标、显示器的酸爽，作为开发编译环境的虚拟机就是个问题。放在某个server上，锁在大楼的某处，感觉蛮牢。直到一次急等着release一个feature时怎么也连不">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Vagrant 管理虚拟机">
+<meta property="og:url" content="http://zuyunfei.com/2016/02/02/vagrant/index.html">
+<meta property="og:site_name" content="Cloud&#39;s Blog">
+<meta property="og:description" content="万万没想到，有一天也会沦落到在一台4G内存的Win7笔记本上搞linux编程，还我的16核Z600……好吧，抱怨也是没有用的，和销售人员一样型号的13寸笔记本，标志着我的coding生涯从此全面进入虚拟机和SSH时代。 先不说外接键盘、鼠标、显示器的酸爽，作为开发编译环境的虚拟机就是个问题。放在某个server上，锁在大楼的某处，感觉蛮牢。直到一次急等着release一个feature时怎么也连不">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://zuyunfei.com/2016/02/02/vagrant/vagrant.png">
+<meta property="article:published_time" content="2016-02-02T07:15:38.000Z">
+<meta property="article:modified_time" content="2022-11-12T05:20:47.862Z">
+<meta property="article:author" content="Yunfei Zu">
+<meta property="article:tag" content="vagrant">
+<meta property="article:tag" content=" 虚拟机">
+<meta property="article:tag" content=" Hyper-V">
+<meta property="article:tag" content=" VirtualBox">
+<meta property="article:tag" content=" Docker">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://zuyunfei.com/2016/02/02/vagrant/vagrant.png">
+
+<link rel="canonical" href="http://zuyunfei.com/2016/02/02/vagrant/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Vagrant 管理虚拟机 | Cloud's Blog</title>
+  
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?39acf9b7e1b335eeb122f98224890a9e";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+        <span class="toggle-line toggle-line-first"></span>
+        <span class="toggle-line toggle-line-middle"></span>
+        <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Cloud's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://zuyunfei.com/2016/02/02/vagrant/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/gaara.png">
+      <meta itemprop="name" content="Yunfei Zu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Cloud's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Vagrant 管理虚拟机
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2016-02-02 15:15:38" itemprop="dateCreated datePublished" datetime="2016-02-02T15:15:38+08:00">2016-02-02</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Others/" itemprop="url" rel="index"><span itemprop="name">Others</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>万万没想到，有一天也会沦落到在一台4G内存的Win7笔记本上搞linux编程，还我的16核Z600……好吧，抱怨也是没有用的，和销售人员一样型号的13寸笔记本，标志着我的coding生涯从此全面进入虚拟机和SSH时代。</p>
+<p>先不说外接键盘、鼠标、显示器的酸爽，作为开发编译环境的虚拟机就是个问题。放在某个server上，锁在大楼的某处，感觉蛮牢。直到一次急等着release一个feature时怎么也连不上，跑去一看，那台server已经被人大卸八块了……幸好最后装上还能用，着实惊出一身冷汗。这件事提醒我真的需要好好考虑怎么将开发环境管理好，减少重新配置环境的开销和风险，甚至为整个团队构建更高效的开发和测试环境，提高团队效率……</p>
+<img data-src="/2016/02/02/vagrant/vagrant.png" class="" title="vagrant">
+
+<p>解放生产力的共产主义理想先不说，说起虚拟机的设置、部署和迁移，vagrant是鼎鼎大名了。按照<a href="https://www.vagrantup.com/" target="_blank" rel="noopener">官网</a>的描述，vagrant是用于创建和配置轻量级、可复用、跨平台的开发环境的工具。</p>
+<a id="more"></a>
+
+<h2 id="vagrant的主要特点"><a href="#vagrant的主要特点" class="headerlink" title="vagrant的主要特点"></a>vagrant的主要特点</h2><ol>
+<li>支持多个虚拟化工具，良好的跨平台性能。vagrant支持VirtualBox, Hyper-V, VMware和Docker等虚拟化工具，用户也可以定制provider。</li>
+<li>提供可配置的虚拟机管理方法。Vagrant的配置文件，使用Ruby的语法描述。通过定义Vagrantfile，可以对虚拟机的网络设置、共享文件、端口转发、内存、CPU等进行定制，通过vagrantfile就可以方便进行部署和迁移。</li>
+<li>提供了基于标准box定制的privisioning机制。</li>
+<li>便利的打包和分发过程。vagrant 提供了高效的打包（box）和分享帮助，提供了注册官方的<a href="https://atlas.hashicorp.com/" target="_blank" rel="noopener">box repository</a>，用户也可以架设自己的分享服务。</li>
+</ol>
+<h2 id="安装使用"><a href="#安装使用" class="headerlink" title="安装使用"></a>安装使用</h2><p>vagrant安装过程相当的简便，windows, linux和mac os上都有一键式<a href="https://www.vagrantup.com/downloads.html" target="_blank" rel="noopener">安装包</a>。主要操作也非常简单，可以参考<a href="https://www.vagrantup.com/docs/getting-started/" target="_blank" rel="noopener">官方教程</a>。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">agrant box add 	<span class="comment"># 添加box的操作</span></span><br><span class="line">vagrant init  	<span class="comment"># 初始化</span></span><br><span class="line">vagrant up  	<span class="comment"># 启动虚拟机</span></span><br><span class="line">vagrant halt  	<span class="comment"># 关闭虚拟机</span></span><br><span class="line">vagrant reload  <span class="comment"># 重启虚拟机</span></span><br><span class="line">vagrant ssh  	<span class="comment"># SSH 至虚拟机</span></span><br><span class="line">vagrant status  <span class="comment"># 查看虚拟机运行状态</span></span><br><span class="line">vagrant destroy <span class="comment"># 销毁当前虚拟机</span></span><br></pre></td></tr></table></figure> 
+
+<h2 id="共享文件的链接问题"><a href="#共享文件的链接问题" class="headerlink" title="共享文件的链接问题"></a>共享文件的链接问题</h2><p>如果单机使用，vagrant可以很方便的映射好共享文件夹。但是由于不同文件系统的原理和功能有差异，这个共享文件有时还是会遇到一些麻烦的。比如在windows上安装vagrant管理多个linux的Vitrualbox虚拟机，如果在linux虚拟机中操作共享文件夹，因为windows操作系统不支持linux一样的软连接，就可能遇到文件链接的错误。下面就是npm在安装node.js包时遇到的错误：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">npm ERR! Error: UNKNOWN, symlink &#39;..&#x2F;which&#x2F;bin&#x2F;which&#39;</span><br><span class="line">npm ERR! If you need help, you may report this log at:</span><br><span class="line">npm ERR!     &lt;http:&#x2F;&#x2F;github.com&#x2F;isaacs&#x2F;npm&#x2F;issues&gt;</span><br></pre></td></tr></table></figure>
+
+<p>解决这个问题可以给npm加上参数<code>npm install --no-bin-links</code>，也可以在vagrant配置中修改provider参数，然后重启vagrant。这里注意需要在windows用<strong>管理员权限</strong>启动vagrant。</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">config.vm.provider <span class="string">"virtualbox"</span> <span class="keyword">do</span> <span class="params">|v|</span></span><br><span class="line">    v.customize [<span class="string">"setextradata"</span>, <span class="symbol">:id</span>, <span class="string">"VBoxInternal2/SharedFoldersEnableSymlinksCreate/vagrant"</span>, <span class="string">"1"</span>]</span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="Vagrantfile文件示例"><a href="#Vagrantfile文件示例" class="headerlink" title="Vagrantfile文件示例"></a>Vagrantfile文件示例</h2><figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># -*- mode: ruby -*-</span></span><br><span class="line"><span class="comment"># vi: set ft=ruby :</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># All Vagrant configuration is done below. The "2" in Vagrant.configure</span></span><br><span class="line"><span class="comment"># configures the configuration version (we support older styles for</span></span><br><span class="line"><span class="comment"># backwards compatibility). Please don't change it unless you know what</span></span><br><span class="line"><span class="comment"># you're doing.</span></span><br><span class="line">Vagrant.configure(<span class="number">2</span>) <span class="keyword">do</span> <span class="params">|config|</span></span><br><span class="line">  <span class="comment"># Every Vagrant development environment requires a box. You can search for</span></span><br><span class="line">  <span class="comment"># boxes at https://atlas.hashicorp.com/search.</span></span><br><span class="line">  config.vm.box = <span class="string">"ubuntu/trusty64"</span></span><br><span class="line"></span><br><span class="line">  <span class="comment"># config.vm.network "forwarded_port", guest: 80, host: 8080</span></span><br><span class="line">  config.vm.network <span class="symbol">:forwarded_port</span>, <span class="symbol">guest:</span> <span class="number">4000</span>, <span class="symbol">host:</span> <span class="number">40000</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">   config.vm.provider <span class="string">"virtualbox"</span> <span class="keyword">do</span> <span class="params">|vb|</span></span><br><span class="line">     <span class="comment"># Display the VirtualBox GUI when booting the machine</span></span><br><span class="line">     <span class="comment">#vb.gui = true</span></span><br><span class="line">     vb.customize [<span class="string">"setextradata"</span>, <span class="symbol">:id</span>, <span class="string">"VBoxInternal2/SharedFoldersEnableSymlinksCreate/v-root"</span>, <span class="string">"1"</span>]</span><br><span class="line">     vb.customize [<span class="string">"setextradata"</span>, <span class="symbol">:id</span>, <span class="string">"VBoxInternal2/SharedFoldersEnableSymlinksCreate/vagrant-root"</span>, <span class="string">"1"</span>]</span><br><span class="line">     vb.customize [<span class="string">"setextradata"</span>, <span class="symbol">:id</span>, <span class="string">"VBoxInternal2/SharedFoldersEnableSymlinksCreate/vagrant"</span>, <span class="string">"1"</span>]</span><br><span class="line">    <span class="comment"># Customize the amount of memory on the VM:</span></span><br><span class="line">     vb.memory = <span class="string">"1024"</span></span><br><span class="line">   <span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/vagrant/" rel="tag"># vagrant</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2015/07/23/sed-in-shell-4/" rel="prev" title="Sed - 4：经典用例">
+      <i class="fa fa-chevron-left"></i> Sed - 4：经典用例
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2016/03/23/Shell-Truncate-File-Extension/" rel="next" title="Shell 截取文件名和后缀">
+      Shell 截取文件名和后缀 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#vagrant的主要特点"><span class="nav-number">1.</span> <span class="nav-text">vagrant的主要特点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装使用"><span class="nav-number">2.</span> <span class="nav-text">安装使用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#共享文件的链接问题"><span class="nav-number">3.</span> <span class="nav-text">共享文件的链接问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Vagrantfile文件示例"><span class="nav-number">4.</span> <span class="nav-text">Vagrantfile文件示例</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Yunfei Zu"
+      src="/images/gaara.png">
+  <p class="site-author-name" itemprop="name">Yunfei Zu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">54</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">42</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/yunfeizu" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;yunfeizu" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.linkedin.com/in/yunfeizu" title="Linkedin → https:&#x2F;&#x2F;www.linkedin.com&#x2F;in&#x2F;yunfeizu" rel="noopener" target="_blank"><i class="fab fa-linkedin fa-fw"></i>Linkedin</a>
+      </span>
+  </div>
+
+
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Yunfei Zu</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<script>
+  var disqus_config = function() {
+    this.page.url = "http://zuyunfei.com/2016/02/02/vagrant/";
+    this.page.identifier = "2016/02/02/vagrant/";
+    this.page.title = "Vagrant 管理虚拟机";
+    };
+  NexT.utils.loadComments(document.querySelector('#disqus_thread'), () => {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: disqus_config
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://yunfeizugithub.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  });
+</script>
+
+</body>
+</html>

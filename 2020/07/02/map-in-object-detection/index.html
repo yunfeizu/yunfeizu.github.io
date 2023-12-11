@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zuyunfei.com","root":"/","scheme":"Gemini","version":"8.0.0-rc.3","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":false,"nav":null,"activeClass":"disqus"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="如何衡量目标检测算法的优劣目标检测(object detection)问题相对于一般AI分类问题更加复杂，不仅检测出目标，输出目标的类别，还要定位出目标的位置。分类问题中的简单accuray指标已经不能反映出目标检测问题结果的准确度，而mAP (Mean Average Precision）就是被用来衡量目标检测算法优劣的常用指标。要理解什么是mAP，需要先澄清什么是Precision（查准率）和">
+<meta property="og:type" content="article">
+<meta property="og:title" content="目标检测中的mAP">
+<meta property="og:url" content="http://zuyunfei.com/2020/07/02/map-in-object-detection/index.html">
+<meta property="og:site_name" content="Cloud&#39;s Blog">
+<meta property="og:description" content="如何衡量目标检测算法的优劣目标检测(object detection)问题相对于一般AI分类问题更加复杂，不仅检测出目标，输出目标的类别，还要定位出目标的位置。分类问题中的简单accuray指标已经不能反映出目标检测问题结果的准确度，而mAP (Mean Average Precision）就是被用来衡量目标检测算法优劣的常用指标。要理解什么是mAP，需要先澄清什么是Precision（查准率）和">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://zuyunfei.com/2020/07/02/map-in-object-detection/table.png">
+<meta property="og:image" content="http://zuyunfei.com/2020/07/02/map-in-object-detection/formula_precision.svg">
+<meta property="og:image" content="http://zuyunfei.com/2020/07/02/map-in-object-detection/formula_recall.svg">
+<meta property="og:image" content="http://zuyunfei.com/2020/07/02/map-in-object-detection/iou.png">
+<meta property="og:image" content="http://zuyunfei.com/2020/07/02/map-in-object-detection/pr_curve.png">
+<meta property="og:image" content="http://zuyunfei.com/2020/07/02/map-in-object-detection/formula_ap.svg">
+<meta property="article:published_time" content="2020-07-02T04:37:11.000Z">
+<meta property="article:modified_time" content="2022-11-12T05:20:47.879Z">
+<meta property="article:author" content="Yunfei Zu">
+<meta property="article:tag" content="AI">
+<meta property="article:tag" content=" Deep Learning">
+<meta property="article:tag" content=" mAP">
+<meta property="article:tag" content=" P-R曲线">
+<meta property="article:tag" content=" 平均精度">
+<meta property="article:tag" content=" 查全率">
+<meta property="article:tag" content=" 查准率，深度学习">
+<meta property="article:tag" content=" 目标检测">
+<meta property="article:tag" content=" Object Detection">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://zuyunfei.com/2020/07/02/map-in-object-detection/table.png">
+
+<link rel="canonical" href="http://zuyunfei.com/2020/07/02/map-in-object-detection/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>目标检测中的mAP | Cloud's Blog</title>
+  
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?39acf9b7e1b335eeb122f98224890a9e";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+        <span class="toggle-line toggle-line-first"></span>
+        <span class="toggle-line toggle-line-middle"></span>
+        <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Cloud's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://zuyunfei.com/2020/07/02/map-in-object-detection/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/gaara.png">
+      <meta itemprop="name" content="Yunfei Zu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Cloud's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          目标检测中的mAP
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-07-02 12:37:11" itemprop="dateCreated datePublished" datetime="2020-07-02T12:37:11+08:00">2020-07-02</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/AI/" itemprop="url" rel="index"><span itemprop="name">AI</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="如何衡量目标检测算法的优劣"><a href="#如何衡量目标检测算法的优劣" class="headerlink" title="如何衡量目标检测算法的优劣"></a>如何衡量目标检测算法的优劣</h1><p>目标检测(object detection)问题相对于一般AI分类问题更加复杂，不仅检测出目标，输出目标的类别，还要定位出目标的位置。分类问题中的简单accuray指标已经不能反映出目标检测问题结果的准确度，而mAP (Mean Average Precision）就是被用来衡量目标检测算法优劣的常用指标。<br>要理解什么是mAP，需要先澄清什么是Precision（查准率）和Recall（查全率）。</p>
+<h1 id="Precision和Recall"><a href="#Precision和Recall" class="headerlink" title="Precision和Recall"></a>Precision和Recall</h1><h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h2><p>查准率和查全率是在信息检索、Web搜索等应用中经常出现的性能度量指标，在机器学习中，也可以用来度量“预测结果中有多少比例是用户感兴趣的”。对于二分类问题，可将样例根据其真实类别与预测类别的组合划分为：</p>
+<a id="more"></a>
+<h3 id="TP、TN、FP、FN"><a href="#TP、TN、FP、FN" class="headerlink" title="TP、TN、FP、FN"></a>TP、TN、FP、FN</h3><ul>
+<li>TP (True Positive): 真正例。Positive指预测输出为正，True代表预测正确。</li>
+<li>TN (True Negative): 真反例。预测输出为负，而且预测正确。</li>
+<li>FP (False Positive): 假正例。预测输出为正，但是预测错误。</li>
+<li>FN (False Negative): 假反例。预测输出为负，但是预测错误。</li>
+</ul>
+<img data-src="/2020/07/02/map-in-object-detection/table.png" class="">
+
+
+<h3 id="Precision"><a href="#Precision" class="headerlink" title="Precision"></a>Precision</h3><p><strong>Precision(查准率）</strong>: 所有预测为正例的结果中，预测正确的比率。</p>
+<img data-src="/2020/07/02/map-in-object-detection/formula_precision.svg" class="">
+
+
+<h3 id="Recall"><a href="#Recall" class="headerlink" title="Recall"></a>Recall</h3><p><strong>Recall (查全率）</strong>：所有正例中被正确预测的比率。</p>
+<img data-src="/2020/07/02/map-in-object-detection/formula_recall.svg" class="">
+
+<h2 id="如何计算"><a href="#如何计算" class="headerlink" title="如何计算"></a>如何计算</h2><p>目标检测问题中，算法通常输出一个预测框(bounding box)来标识检出目标的位置，要衡量这个预测框与目标的实际位置(ground truth)的准确度，可以使用IoU指标。</p>
+<h3 id="交并比IoU-Intersection-over-union"><a href="#交并比IoU-Intersection-over-union" class="headerlink" title="交并比IoU(Intersection over union)"></a>交并比IoU(Intersection over union)</h3><p>交并比IoU衡量的是两个区域的重叠程度，是两个区域重叠部分面积占二者总面积（重叠部分只计算一次）的比例。</p>
+<img data-src="/2020/07/02/map-in-object-detection/iou.png" class="">
+
+<p>目标检测中IoU就是预测框与实际框的<strong>交集除以并集</strong>。<br>我们可以设置一个阈值（threshold），通常是0.5，预测结果可以分为：</p>
+<ul>
+<li>如果IoU &gt;= 0.5<ul>
+<li>如果预测类别也正确，认为是一个好的预测，分类为TP</li>
+<li>如果预测类别错误，认为是一个坏的预测，分类为FP</li>
+</ul>
+</li>
+<li>如果IoU &lt; 0.5, 认为是一个坏的预测，分类为FP</li>
+<li>如果一个目标出现在图像中，但是算法未检出，分类为FN</li>
+<li>TN（图像上所有不包含实际框和检测框的部分）通常计算中用不到。</li>
+</ul>
+<h1 id="AP和mAP"><a href="#AP和mAP" class="headerlink" title="AP和mAP"></a>AP和mAP</h1><h2 id="P-R曲线"><a href="#P-R曲线" class="headerlink" title="P-R曲线"></a>P-R曲线</h2><p>查全率和查准率通常是一对矛盾的度量，一般来说，查准率高时，查全率往往偏低；而查全率高时，查准率往往偏低。<br>我们如果把所有预测结果对样例进行排序，排在前面的是“最可能”的正例样本，以查准率为纵轴、查全率为横轴作图，得到一条”P-R曲线”。</p>
+<img data-src="/2020/07/02/map-in-object-detection/pr_curve.png" class="">
+
+<p>P-R曲线直观的显示出一个算法在样本总体上的查全率、查准率情况。如果一个算法的P-R曲线被另一个算法的曲线完全包住，则可断言后者优于前者。但是实际中，经常不同算法的P-R曲线是互相交叉的，这时就很难直观判断出两者的优劣。这时通常会考察<strong>平衡点(BEP)、F1度量、AP</strong>等指标。</p>
+<h2 id="AP"><a href="#AP" class="headerlink" title="AP"></a>AP</h2><p>AP（average precision 平均精度）：AP是计算单类别的模型平均准确度。对于目标检测任务，<strong>每一个类都可以计算出其Precision和Recall，每个类都可以得到一条P-R曲线，曲线下的面积就是AP的值。</strong>如果一个算法的AP值较大，也就是P-R曲线下的面积比较大，可以认为此算法查准率和查全率整体上相对</p>
+<img data-src="/2020/07/02/map-in-object-detection/formula_ap.svg" class="">
+
+<h2 id="mAP"><a href="#mAP" class="headerlink" title="mAP"></a>mAP</h2><p>mAP(mean of Average Precision) : 对所有类别的AP值求平均值。</p>
+<p>Pascal VOC（VOC2007 &amp; VOC2012）是评测目标检测算法的常用数据集，VOC数据集使用一个固定的IoU阈值0.5来计算AP值。 但是在2014年之后，MS-COCO（Microsoft Common Objects)数据集逐渐兴起。 在COCO数据集中，更关注预测框位置的准确性，AP值是针对多个IoU阈值的AP平均值，具体的就是在0.5 和0.95之间取10个IoU阈值（0.5、0.55、0.6 ….. 0.9、0.95）。所以VOC数据集中mAP通常标记为<code>mAP @ IoU=0.5</code>, <code>mAP@0.5</code> 或者 <code>mAP_50</code>，在COCO 数据集中册标记为 <code>mAP @ IoU=0.5:0.05:0.95</code>, <code>mAP @ IoU=0.5:0.95</code> 或者 <code>mAP@[0.5:0.95]</code>.</p>
+<h1 id="参考："><a href="#参考：" class="headerlink" title="参考："></a>参考：</h1><p><a href="https://blog.csdn.net/weixin_44791964/article/details/102414522" target="_blank" rel="noopener">https://blog.csdn.net/weixin_44791964/article/details/102414522</a><br>[<a href="https://www.jianshu.com/p/fecc98e448d9]" target="_blank" rel="noopener">https://www.jianshu.com/p/fecc98e448d9]</a>(</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/AI/" rel="tag"># AI</a>
+              <a href="/tags/Deep-Learning/" rel="tag"># Deep Learning</a>
+              <a href="/tags/Object-Detection/" rel="tag"># Object Detection</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/06/17/non-maximum-suppression/" rel="prev" title="非极大值抑制(Non-Maximum Suppression)">
+      <i class="fa fa-chevron-left"></i> 非极大值抑制(Non-Maximum Suppression)
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/07/14/build-pytorch-for-arm/" rel="next" title="在CORE-3399PRO-JD4上编译安装PyTorch和OpenCV">
+      在CORE-3399PRO-JD4上编译安装PyTorch和OpenCV <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#如何衡量目标检测算法的优劣"><span class="nav-number">1.</span> <span class="nav-text">如何衡量目标检测算法的优劣</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Precision和Recall"><span class="nav-number">2.</span> <span class="nav-text">Precision和Recall</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#定义"><span class="nav-number">2.1.</span> <span class="nav-text">定义</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#TP、TN、FP、FN"><span class="nav-number">2.1.1.</span> <span class="nav-text">TP、TN、FP、FN</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Precision"><span class="nav-number">2.1.2.</span> <span class="nav-text">Precision</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Recall"><span class="nav-number">2.1.3.</span> <span class="nav-text">Recall</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#如何计算"><span class="nav-number">2.2.</span> <span class="nav-text">如何计算</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#交并比IoU-Intersection-over-union"><span class="nav-number">2.2.1.</span> <span class="nav-text">交并比IoU(Intersection over union)</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#AP和mAP"><span class="nav-number">3.</span> <span class="nav-text">AP和mAP</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#P-R曲线"><span class="nav-number">3.1.</span> <span class="nav-text">P-R曲线</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AP"><span class="nav-number">3.2.</span> <span class="nav-text">AP</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#mAP"><span class="nav-number">3.3.</span> <span class="nav-text">mAP</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考："><span class="nav-number">4.</span> <span class="nav-text">参考：</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Yunfei Zu"
+      src="/images/gaara.png">
+  <p class="site-author-name" itemprop="name">Yunfei Zu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">54</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">42</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/yunfeizu" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;yunfeizu" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.linkedin.com/in/yunfeizu" title="Linkedin → https:&#x2F;&#x2F;www.linkedin.com&#x2F;in&#x2F;yunfeizu" rel="noopener" target="_blank"><i class="fab fa-linkedin fa-fw"></i>Linkedin</a>
+      </span>
+  </div>
+
+
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Yunfei Zu</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<script>
+  var disqus_config = function() {
+    this.page.url = "http://zuyunfei.com/2020/07/02/map-in-object-detection/";
+    this.page.identifier = "2020/07/02/map-in-object-detection/";
+    this.page.title = "目标检测中的mAP";
+    };
+  NexT.utils.loadComments(document.querySelector('#disqus_thread'), () => {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: disqus_config
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://yunfeizugithub.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  });
+</script>
+
+</body>
+</html>

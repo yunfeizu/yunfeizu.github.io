@@ -1,0 +1,1124 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zuyunfei.com","root":"/","scheme":"Gemini","version":"8.0.0-rc.3","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":false,"nav":null,"activeClass":"disqus"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta property="og:type" content="website">
+<meta property="og:title" content="Cloud&#39;s Blog">
+<meta property="og:url" content="http://zuyunfei.com/index.html">
+<meta property="og:site_name" content="Cloud&#39;s Blog">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:author" content="Yunfei Zu">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://zuyunfei.com/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : true,
+    isPost : false,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Cloud's Blog</title>
+  
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?39acf9b7e1b335eeb122f98224890a9e";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+        <span class="toggle-line toggle-line-first"></span>
+        <span class="toggle-line toggle-line-middle"></span>
+        <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Cloud's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content index posts-expand">
+            
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://zuyunfei.com/2022/06/01/programming-model-and-hardware-abstraction/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/gaara.png">
+      <meta itemprop="name" content="Yunfei Zu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Cloud's Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/06/01/programming-model-and-hardware-abstraction/" class="post-title-link" itemprop="url">AI芯片：编程模型和硬件抽象</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-06-01 10:33:42" itemprop="dateCreated datePublished" datetime="2022-06-01T10:33:42+08:00">2022-06-01</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="一、编程模型和硬件架构"><a href="#一、编程模型和硬件架构" class="headerlink" title="一、编程模型和硬件架构"></a>一、编程模型和硬件架构</h1><p>由于AI应用对巨大算力的极致追求，各种针对AI计算场景的AI芯片架构层出不穷。AI软件栈的复杂性就来自于硬件架构的跨越式发展。而面对这样的复杂度，AI软件编程模型的设计和架构就变得至关重要。</p>
+<p><em>编程模型</em>就是对编程共性的抽象，或许可以从两个层面理解：</p>
+<ol>
+<li>架构上，是对底层硬件架构和对软件的组织、复用、交互方式的抽象</li>
+<li>工程上，可以是一个或几个软件中间层所提供的上层应用开发接口。是基于硬件的岩石之上，让上层软件生态得以发展的土壤层</li>
+</ol>
+<p>本文基于对Nvidia CUDA和Graphcore Poplar编程模型的调研，希望能谈谈个人对AI芯片的编程模型的一些看法。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2022/06/01/programming-model-and-hardware-abstraction/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://zuyunfei.com/2020/07/14/build-pytorch-for-arm/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/gaara.png">
+      <meta itemprop="name" content="Yunfei Zu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Cloud's Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/07/14/build-pytorch-for-arm/" class="post-title-link" itemprop="url">在CORE-3399PRO-JD4上编译安装PyTorch和OpenCV</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-07-14 10:14:30" itemprop="dateCreated datePublished" datetime="2020-07-14T10:14:30+08:00">2020-07-14</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/AI/" itemprop="url" rel="index"><span itemprop="name">AI</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>最近拿到一块<a href="http://wiki.t-firefly.com/zh_CN/Core-3399pro-JD4/started.html" target="_blank" rel="noopener">CORE-3399PRO-JD4</a>开发板，要在上面部署AI应用。这块板子搭载Rockchip RK3399Pro处理器，采用双核 Cortex-A72+四核 Cortex-A53构架，主频高达 1.8GHz，集成四核Mali-T864 GPU，并内置高性能NPU，号称性能优异。但是实际过程中，发现发热严重，要使用NPU需要把算法移植到Rockchip提供的RKNN-Toolkit开发套件。按照<a href="http://wiki.t-firefly.com/zh_CN/3399pro_npu/npu_rknn_toolkit.html" target="_blank" rel="noopener">官方文档</a>把板子刷成了ubuntu18.4，然后安装了RKNN，打算把现有模型转换一下，结果发现： </p>
+<ul>
+<li>适配的tensorflow版本较低（RKNN 1.3 支持tensorflow 1.10.1），2.0版本的模型无法转换。</li>
+<li>ONNX版本模型转换失败，应该也是版本不对</li>
+<li>pytorch干脆没有迁移到板子上，官方例程都跑不起来。</li>
+</ul>
+<p>实在没办法，只能先不用NPU把应用跑起来试试。这里把编译在ARM Ubuntu18.04上编译pytorch和opencv的过程记录一下。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/07/14/build-pytorch-for-arm/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://zuyunfei.com/2020/07/02/map-in-object-detection/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/gaara.png">
+      <meta itemprop="name" content="Yunfei Zu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Cloud's Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/07/02/map-in-object-detection/" class="post-title-link" itemprop="url">目标检测中的mAP</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-07-02 12:37:11" itemprop="dateCreated datePublished" datetime="2020-07-02T12:37:11+08:00">2020-07-02</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/AI/" itemprop="url" rel="index"><span itemprop="name">AI</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="如何衡量目标检测算法的优劣"><a href="#如何衡量目标检测算法的优劣" class="headerlink" title="如何衡量目标检测算法的优劣"></a>如何衡量目标检测算法的优劣</h1><p>目标检测(object detection)问题相对于一般AI分类问题更加复杂，不仅检测出目标，输出目标的类别，还要定位出目标的位置。分类问题中的简单accuray指标已经不能反映出目标检测问题结果的准确度，而mAP (Mean Average Precision）就是被用来衡量目标检测算法优劣的常用指标。<br>要理解什么是mAP，需要先澄清什么是Precision（查准率）和Recall（查全率）。</p>
+<h1 id="Precision和Recall"><a href="#Precision和Recall" class="headerlink" title="Precision和Recall"></a>Precision和Recall</h1><h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h2><p>查准率和查全率是在信息检索、Web搜索等应用中经常出现的性能度量指标，在机器学习中，也可以用来度量“预测结果中有多少比例是用户感兴趣的”。对于二分类问题，可将样例根据其真实类别与预测类别的组合划分为：</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/07/02/map-in-object-detection/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://zuyunfei.com/2020/06/17/non-maximum-suppression/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/gaara.png">
+      <meta itemprop="name" content="Yunfei Zu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Cloud's Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/06/17/non-maximum-suppression/" class="post-title-link" itemprop="url">非极大值抑制(Non-Maximum Suppression)</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-06-17 10:30:28" itemprop="dateCreated datePublished" datetime="2020-06-17T10:30:28+08:00">2020-06-17</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/AI/" itemprop="url" rel="index"><span itemprop="name">AI</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h1><p>在模型预测阶段，我们先为图像生成多个锚框，并为这些锚框一一预测类别和偏移量。随后，我们根据锚框及其预测偏移量得到预测边界框。当锚框数量较多时，同一个目标上可能会输出较多相似的预测边界框。了使结果更加简洁，我们可以移除相似的预测边界框。常用的方法叫作非极大值抑制（non-maximum suppression，NMS）。</p>
+<h1 id="计算流程"><a href="#计算流程" class="headerlink" title="计算流程"></a>计算流程</h1><p>非极大值抑制的流程如下：</p>
+<ul>
+<li>根据置信度得分进行排序</li>
+<li>选择置信度最高的比边界框添加到最终输出列表中，将其从边界框列表中删除</li>
+<li>计算所有边界框的面积</li>
+<li>计算置信度最高的边界框与其它候选框的IoU。</li>
+<li>删除IoU大于阈值的边界框</li>
+<li>重复上述过程，直至边界框列表为空。
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/06/17/non-maximum-suppression/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://zuyunfei.com/2020/06/12/the-next-theme/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/gaara.png">
+      <meta itemprop="name" content="Yunfei Zu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Cloud's Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/06/12/the-next-theme/" class="post-title-link" itemprop="url">使用Hexo的NexT主题</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-06-12 13:40:11" itemprop="dateCreated datePublished" datetime="2020-06-12T13:40:11+08:00">2020-06-12</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Others/" itemprop="url" rel="index"><span itemprop="name">Others</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h1><img data-src="/2020/06/12/the-next-theme/image1.png" class="">
+<p>NexT是Hexo的知名第三方主题，黑白极简风格四合一，有相当多的使用者，维护也相当给力，数年来一直都在频繁更新。但是最近搜索NexT, 却发现在之前的github仓库<a href="https://github.com/theme-next/hexo-theme-next" target="_blank" rel="noopener">theme-next/hexo-theme-next</a>之外，又出现一个新的仓库<a href="https://github.com/next-theme/hexo-theme-next" target="_blank" rel="noopener">next-theme/hexo-theme-next</a>，theme-next vs next-theme，难道是个李鬼？</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/06/12/the-next-theme/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://zuyunfei.com/2018/07/06/use-docker-in-wsl/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/gaara.png">
+      <meta itemprop="name" content="Yunfei Zu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Cloud's Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2018/07/06/use-docker-in-wsl/" class="post-title-link" itemprop="url">在WSL中使用docker</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-07-06 13:07:35" itemprop="dateCreated datePublished" datetime="2018-07-06T13:07:35+08:00">2018-07-06</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="Docker-on-WSL"><a href="#Docker-on-WSL" class="headerlink" title="Docker on WSL"></a>Docker on WSL</h2><p>在<a href="/2018/06/15/file-system-configuration-in-wsl/">配置好了WLS</a>后，最近慢慢的把以前在虚拟机上开发的项目都移到了WSL上，一切都像在原生的ubuntu下一样，只有一个用到docker的项目遇到了波折: 由于WSL 还不支持linux kernel的一些特性，在WSL下可以安装docker，但是 docker engine 的运行会有问题。Github和微软的feedback页面上有不少人都提出过这个问题 <a href="https://wpdev.uservoice.com/forums/266908-command-prompt-console-bash-on-ubuntu-on-windo/suggestions/13250370-docker?page=3&per_page=20" target="_blank" rel="noopener">[1]</a> <a href="https://github.com/Microsoft/WSL/issues/964" target="_blank" rel="noopener">[2]</a> <a href="https://github.com/Microsoft/WSL/issues/1854" target="_blank" rel="noopener">[3]</a>，但是WSL团队都没什么正面回答。能找到的就是WSL的PM、大帅哥<a href="https://www.linkedin.com/in/jack-hammons-a609a649/" target="_blank" rel="noopener">Jack Hammons</a>在Microsoft Build 2017上的回答提问时的一段话。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2018/07/06/use-docker-in-wsl/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://zuyunfei.com/2018/06/15/file-system-configuration-in-wsl/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/gaara.png">
+      <meta itemprop="name" content="Yunfei Zu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Cloud's Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2018/06/15/file-system-configuration-in-wsl/" class="post-title-link" itemprop="url">WSL文件读写权限的配置方法</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-06-15 12:23:47" itemprop="dateCreated datePublished" datetime="2018-06-15T12:23:47+08:00">2018-06-15</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="Windows-subsystem-for-Linux"><a href="#Windows-subsystem-for-Linux" class="headerlink" title="Windows subsystem for Linux"></a>Windows subsystem for Linux</h2><img data-src="/2018/06/15/file-system-configuration-in-wsl/wlovel.jpg" class="">
+<p>昨天晚上俄罗斯世界杯开踢了，看起来足球世界还是没怎么变，梅罗仍然统治世界，沙特仍然被欧洲球队打穿，中国队仍然四年一度的缺席……但是技术的世界却是日新月异，连微软都拥抱开源了，Windows subsystem for Linux (WSL) 简直是在赤裸裸的勾引程序员扔掉Mac投奔Windows。</p>
+<p>既有Windows的桌面和Office套件，又可以方便的使用Linux的工具链，这样的生活不要太美好！当然前期坑是少不了的，经过两年时间的改进，wsl团队解决了不少问题（比如本文将提到的文件权限问题），个人觉得已经可以入坑了。当前时间节点18年6月，版本windows 10 1803, build 17134。</p>
+<p>WSL的介绍和安装请看下这里：</p>
+<ul>
+<li><a href="https://docs.microsoft.com/zh-cn/windows/wsl/faq?from=singlemessage&isappinstalled=0" target="_blank" rel="noopener">Frequently Asked Questions</a></li>
+<li><a href="https://docs.microsoft.com/zh-cn/windows/wsl/install-win10" target="_blank" rel="noopener">Install the Windows Subsystem for Linux</a></li>
+<li><a href="https://blogs.msdn.microsoft.com/commandline/2018/03/07/windows10v1803/" target="_blank" rel="noopener">What’s new for the Command Line in Windows 10 version 1803</a>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2018/06/15/file-system-configuration-in-wsl/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://zuyunfei.com/2016/12/05/JIRA-Bibucket-Deployment-Strategy/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/gaara.png">
+      <meta itemprop="name" content="Yunfei Zu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Cloud's Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2016/12/05/JIRA-Bibucket-Deployment-Strategy/" class="post-title-link" itemprop="url">JIRA&Bibucket 部署策略</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2016-12-05 17:07:34" itemprop="dateCreated datePublished" datetime="2016-12-05T17:07:34+08:00">2016-12-05</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Others/" itemprop="url" rel="index"><span itemprop="name">Others</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <img data-src="/2016/12/05/JIRA-Bibucket-Deployment-Strategy/jira-bitbucket-deployment_0.jpg" class="" title="JIRA&amp;Bitbucket">
+<p>加入到新团队后一直着手于建立统一的标准软件流程，现有的项目因为不同BU的影响，不仅流程各不相同，使用的工具也是五花八门，所以从年初制定KPI时，不仅是制定标准的软件流程，软件开发工具的统一也是一项重要内容。经过各种讨论评估，最终决定使用JIRA和Bitbucket，后续还会有Bamboo和Confluence的加入，最终凑齐Atlasssian全家桶， 完成软件开发从需求管理、任务管理、测试管理、代码管理、缺陷管理、持续集成、文档管理的全流程覆盖。</p>
+<p>经过漫长的与sourcing和IT部门的扯皮，终于采购了JIRA和Bitbucket。然后由于IT部门的不作为，所有安装、配置、管理、维护都是自己动手，项目开发的任务之外又承担了配置管理员的角色，虽然这个我这个二把刀管理员搞出来的配置非常不专业，但是因为是自己的心血，还是很有必要记录一下的。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2016/12/05/JIRA-Bibucket-Deployment-Strategy/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://zuyunfei.com/2016/06/28/brain-storming/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/gaara.png">
+      <meta itemprop="name" content="Yunfei Zu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Cloud's Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2016/06/28/brain-storming/" class="post-title-link" itemprop="url">头脑风暴</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2016-06-28 16:58:54" itemprop="dateCreated datePublished" datetime="2016-06-28T16:58:54+08:00">2016-06-28</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Project/" itemprop="url" rel="index"><span itemprop="name">Project</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>头脑风暴是经常被使用的词汇，大众或多或少都知道这种讨论解决问题的方法，但是即使是在专业的项目管理者手中，头脑风暴也是经常被误用的一个工具。人们经常认为自己是在进行头脑风暴，但其实他们只是在进行讨论而已，真正的头脑风暴是一个正式的过程。在参加了很多各种各样的、或好或坏的头脑风暴后，觉得有必要做些总结。</p>
+<p>头脑风暴（Brainstorming）在<a href="https://zh.wikipedia.org/wiki/%E8%85%A6%E5%8A%9B%E6%BF%80%E7%9B%AA%E6%B3%95" target="_blank" rel="noopener">维基百科</a>的定义：一种为激发创造力、强化思考力而设计出来的一种方法。此法是美国BBDO（Batten, Bcroton, Durstine and Osborn）广告公司创始人亚历克斯‧奥斯本（Alex F. Osborn）于1938年首创的。</p>
+<p>头脑风暴作为一种群体决策工具在PMBOK的多个管理过程中被推荐使用，比如：项目整合管理，范围管理，时间管理，成本管理，质量管理，风险管理等。</p>
+<p>头脑风暴主要目标大量收集解决问题的灵感和方案。为了最大限度的激发团队的创造力和思考力，过程中提倡自由发言、畅所欲言、发散思考，鼓励互相启发和激励，禁止评论和批评。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2016/06/28/brain-storming/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://zuyunfei.com/2016/03/23/Shell-Truncate-File-Extension/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/gaara.png">
+      <meta itemprop="name" content="Yunfei Zu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Cloud's Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2016/03/23/Shell-Truncate-File-Extension/" class="post-title-link" itemprop="url">Shell 截取文件名和后缀</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2016-03-23 16:47:14" itemprop="dateCreated datePublished" datetime="2016-03-23T16:47:14+08:00">2016-03-23</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="截取文件名和后缀"><a href="#截取文件名和后缀" class="headerlink" title="截取文件名和后缀"></a>截取文件名和后缀</h2><p>编写Shell脚本的过程中，经常会和文件名和文件路径打交道。如果用户输入了一个文件的全名（可能包含绝对路径和文件后缀），如何得到文件的路径名，文件名，文件后缀这些信息呢。Shell脚本拥有强大的字符串处理能力，如果把文件名当做字符串，我们不难使用cut或sed这样的工具得到我们想要的结果。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">$fullfile&#x3D;&#x2F;the&#x2F;path&#x2F;foo.txt</span><br><span class="line">$fullname&#x3D;$(basename $fullfile)</span><br><span class="line">$dir&#x3D;$(dirname $fullfile)</span><br><span class="line">$filename&#x3D;$(echo $fullname | cut -d . -f1)</span><br><span class="line">$extension&#x3D;$(echo $fullname | cut -d . -f2)</span><br><span class="line">$ echo $dir , $fullname , $filename , $extension</span><br><span class="line">&#x2F;the&#x2F;path , foo.txt , foo , txt</span><br></pre></td></tr></table></figure>
+<p>这里使用<a href="http://pubs.opengroup.org/onlinepubs/007908799/xcu/basename.html" target="_blank" rel="noopener">basename</a>命令可以直接得到包含后缀的文件名，而<a href="http://pubs.opengroup.org/onlinepubs/007908799/xcu/dirname.html" target="_blank" rel="noopener">dirname</a>命令可以得到路径名，然后就能简单的用cut截取文件名和后缀名。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2016/03/23/Shell-Truncate-File-Extension/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+
+  
+  <nav class="pagination">
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+  </nav>
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Yunfei Zu"
+      src="/images/gaara.png">
+  <p class="site-author-name" itemprop="name">Yunfei Zu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">54</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">42</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/yunfeizu" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;yunfeizu" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.linkedin.com/in/yunfeizu" title="Linkedin → https:&#x2F;&#x2F;www.linkedin.com&#x2F;in&#x2F;yunfeizu" rel="noopener" target="_blank"><i class="fab fa-linkedin fa-fw"></i>Linkedin</a>
+      </span>
+  </div>
+
+
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Yunfei Zu</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+</body>
+</html>

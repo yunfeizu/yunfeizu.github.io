@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zuyunfei.com","root":"/","scheme":"Gemini","version":"8.0.0-rc.3","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":false,"nav":null,"activeClass":"disqus"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Snippet（片段）在编程中是指一段可复用的代码或文本，在绝大部分编辑器和IDE中都有Code Snippet功能。Code Snippet代码片段自动生成据说是textMate首创的，现在主流的编辑器和IDE都有类似的功能，可以让用户针对不同的场景定制、管理和插入代码片段。在Vim中自从我用了ultisnips，傍观者的智商再也跟不上我码代码的速度，谈笑风生，弹指间满屏代码，可谓居家旅行必备装">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Snippets 代码片段">
+<meta property="og:url" content="http://zuyunfei.com/2015/03/02/code-snippets/index.html">
+<meta property="og:site_name" content="Cloud&#39;s Blog">
+<meta property="og:description" content="Snippet（片段）在编程中是指一段可复用的代码或文本，在绝大部分编辑器和IDE中都有Code Snippet功能。Code Snippet代码片段自动生成据说是textMate首创的，现在主流的编辑器和IDE都有类似的功能，可以让用户针对不同的场景定制、管理和插入代码片段。在Vim中自从我用了ultisnips，傍观者的智商再也跟不上我码代码的速度，谈笑风生，弹指间满屏代码，可谓居家旅行必备装">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://zuyunfei.com/2015/03/02/code-snippets/ultisnips.gif">
+<meta property="article:published_time" content="2015-03-02T07:15:21.000Z">
+<meta property="article:modified_time" content="2022-11-12T05:20:47.851Z">
+<meta property="article:author" content="Yunfei Zu">
+<meta property="article:tag" content="Snippet">
+<meta property="article:tag" content=" Vim">
+<meta property="article:tag" content=" Sublime">
+<meta property="article:tag" content=" ST3">
+<meta property="article:tag" content=" Sublime Text">
+<meta property="article:tag" content=" ultisinps">
+<meta property="article:tag" content=" snipmate">
+<meta property="article:tag" content=" neosnippet">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://zuyunfei.com/2015/03/02/code-snippets/ultisnips.gif">
+
+<link rel="canonical" href="http://zuyunfei.com/2015/03/02/code-snippets/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Snippets 代码片段 | Cloud's Blog</title>
+  
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?39acf9b7e1b335eeb122f98224890a9e";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+        <span class="toggle-line toggle-line-first"></span>
+        <span class="toggle-line toggle-line-middle"></span>
+        <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Cloud's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://zuyunfei.com/2015/03/02/code-snippets/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/gaara.png">
+      <meta itemprop="name" content="Yunfei Zu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Cloud's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Snippets 代码片段
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2015-03-02 15:15:21" itemprop="dateCreated datePublished" datetime="2015-03-02T15:15:21+08:00">2015-03-02</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Vim/" itemprop="url" rel="index"><span itemprop="name">Vim</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>Snippet（片段）在编程中是指一段可复用的代码或文本，在绝大部分编辑器和IDE中都有Code Snippet功能。Code Snippet代码片段自动生成据说是textMate首创的，现在主流的编辑器和IDE都有类似的功能，可以让用户针对不同的场景定制、管理和插入代码片段。在Vim中自从我用了ultisnips，傍观者的智商再也跟不上我码代码的速度，谈笑风生，弹指间满屏代码，可谓居家旅行必备装X神奇。</p>
+<img data-src="/2015/03/02/code-snippets/ultisnips.gif" class="" title="ultisnips演示">
+
+<a id="more"></a>
+
+<h2 id="Vim中的Ultisnips插件"><a href="#Vim中的Ultisnips插件" class="headerlink" title="Vim中的Ultisnips插件"></a>Vim中的Ultisnips插件</h2><p><a href="https://github.com/SirVer/ultisnips" target="_blank" rel="noopener">Ultisnips</a>是Vim的明星插件，可以配合<a href="/2013/05/16/killer-plugin-of-vim-youcompleteme/">YouCompleteMe</a>或者Neocomplete的自动补全，使用体验上不逊于任何现代编译器和IDE。使用<a href="/2013/04/12/killer-plugin-of-vim-vundle/">Vundle</a>安装ultisnips非常的简单，设置也有非常详细的<a href="https://github.com/SirVer/ultisnips/blob/master/doc/UltiSnips.txt" target="_blank" rel="noopener">文档</a>。</p>
+<figure class="highlight vim"><figcaption><span>ultisnips 配置</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">" Track the engine.</span></span><br><span class="line">Plugin <span class="string">'SirVer/ultisnips'</span></span><br><span class="line"></span><br><span class="line"><span class="comment">" Snippets are separated from the engine. Add this if you want them:</span></span><br><span class="line">Plugin <span class="string">'honza/vim-snippets'</span></span><br><span class="line"></span><br><span class="line"><span class="comment">" Trigger configuration. Do not use &lt;tab&gt; if you use https://github.com/Valloric/YouCompleteMe.</span></span><br><span class="line"><span class="keyword">let</span> <span class="variable">g:UltiSnipsExpandTrigger</span>=<span class="string">"&lt;tab&gt;"</span></span><br><span class="line"><span class="keyword">let</span> <span class="variable">g:UltiSnipsJumpForwardTrigger</span>=<span class="string">"&lt;c-b&gt;"</span></span><br><span class="line"><span class="keyword">let</span> <span class="variable">g:UltiSnipsJumpBackwardTrigger</span>=<span class="string">"&lt;c-z&gt;"</span></span><br><span class="line"></span><br><span class="line"><span class="comment">" If you want :UltiSnipsEdit to split your window.</span></span><br><span class="line"><span class="keyword">let</span> <span class="variable">g:UltiSnipsEditSplit</span>=<span class="string">"vertical"</span></span><br></pre></td></tr></table></figure>
+
+
+<p>当然vim大神们肯定不会只造一个轮子，<a href="https://github.com/msanders/snipmate.vim" target="_blank" rel="noopener">snipmate</a>和<a href="https://github.com/Shougo/neosnippet.vim" target="_blank" rel="noopener">neosnippet</a>也都不少拥护者，还有一些不错的snippet库：<a href="https://github.com/spf13/snipmate-snippets" target="_blank" rel="noopener">1</a>、<a href="https://github.com/scrooloose/snipmate-snippets" target="_blank" rel="noopener">2</a>、<a href="https://github.com/honza/vim-snippets" target="_blank" rel="noopener">3</a>。这些插件大部分都支持textmate格式的snippet，配置和trigger方法都大同小异，并可以根据自己项目的code guideline修改snippets。但是像所有Vim的东西一样，入门的过程并不轻松，暗坑无数。本着适度折腾的原则，问题遇见了再说。</p>
+<figure class="highlight vim"><figcaption><span>cpp.snippets</span><a href="https://raw.githubusercontent.com/yunfeizu/dotfiles/master/vim/UltiSnips/cpp.snippets" target="_blank" rel="noopener">link</a></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">extends <span class="keyword">c</span></span><br><span class="line"></span><br><span class="line">###########################################################################</span><br><span class="line">#                            TextMate Snippets                            #</span><br><span class="line">###########################################################################</span><br><span class="line">snippet <span class="keyword">cl</span> <span class="string">"class .. (class)"</span> !</span><br><span class="line">class $&#123;<span class="number">1</span>:`!p snip.<span class="keyword">rv</span> = snip.basename <span class="built_in">or</span> <span class="string">"name"</span>`&#125;</span><br><span class="line">&#123;</span><br><span class="line">public:</span><br><span class="line">  $&#123;1/(\w+).*/$1/&#125;($&#123;2:arguments&#125;);</span><br><span class="line">  virtual ~$&#123;1/(\w+).*/$1/&#125;();</span><br><span class="line"></span><br><span class="line">private:</span><br><span class="line">  $&#123;<span class="number">0</span>:/* data */&#125;</span><br><span class="line">&#125;;</span><br><span class="line">endsnippet</span><br><span class="line"></span><br><span class="line">snippet ns <span class="string">"namespace .. (namespace)"</span> !</span><br><span class="line">namespace$&#123;<span class="number">1</span>/.+/ /<span class="keyword">m</span>&#125;$&#123;<span class="number">1</span>:`!p snip.<span class="keyword">rv</span> = snip.basename <span class="built_in">or</span> <span class="string">"name"</span>`&#125;</span><br><span class="line">&#123;</span><br><span class="line">$&#123;VISUAL&#125;$&#123;<span class="number">0</span>:$&#123;VISUAL/(.*)/(?<span class="number">1</span>::\/* code *\/)/&#125;&#125;</span><br><span class="line">&#125;$&#123;<span class="number">1</span>/.+/ \/\/ namespace /<span class="keyword">m</span>&#125;$<span class="number">1</span>$&#123;<span class="number">1</span>/.+/ /<span class="keyword">m</span>&#125;</span><br><span class="line">endsnippet</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+<h2 id="Sublime-text-3中的snippet"><a href="#Sublime-text-3中的snippet" class="headerlink" title="Sublime text 3中的snippet"></a>Sublime text 3中的snippet</h2><p>Sublime Text作为更现代更人性化的编辑器，snippet的配置也更加方便，只要在Tools工具栏中点击New Snippet就能创建一个新的Snippet模板，这个模板的语法非常直观，用户可以定义snippet的tabTrigger和scope。</p>
+<figure class="highlight xml"><figcaption><span>codeblock.sublime-snippet</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">snippet</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">content</span>&gt;</span>&lt;![CDATA[</span><br><span class="line">&#123;% codeblock lang:$&#123;1:lang&#125; %&#125;</span><br><span class="line">$&#123;2:code&#125;</span><br><span class="line">&#123;% endcodeblock %&#125;</span><br><span class="line">]]&gt;<span class="tag">&lt;/<span class="name">content</span>&gt;</span></span><br><span class="line">	<span class="comment">&lt;!-- Optional: Set a tabTrigger to define how to trigger the snippet --&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">tabTrigger</span>&gt;</span>codeblock<span class="tag">&lt;/<span class="name">tabTrigger</span>&gt;</span></span><br><span class="line">	<span class="comment">&lt;!-- Optional: Set a scope to limit where the snippet will trigger --&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">scope</span>&gt;</span>text.html.markdown<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">snippet</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>这里需要注意的是，截止目前为止，sublime的每个snippet需要保存在单独文件中，而且文件的后缀名一定要是<code>.sublime-snippet</code>。sublime中的scope概念是从textmate中借鉴过来的，下面的列表是sublime中主要支持的scope定义。</p>
+<figure class="highlight plain"><figcaption><span>scopes.txt</span><a href="https://gist.github.com/iambibhas/4705378" target="_blank" rel="noopener">link</a></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br></pre></td><td class="code"><pre><span class="line">Here is a list of scopes to use in Sublime Text snippets - </span><br><span class="line"></span><br><span class="line">ActionScript: source.actionscript.2</span><br><span class="line">AppleScript: source.applescript</span><br><span class="line">ASP: source.asp</span><br><span class="line">Batch FIle: source.dosbatch</span><br><span class="line">C#: source.cs</span><br><span class="line">C++: source.c++</span><br><span class="line">Clojure: source.clojure</span><br><span class="line">CoffeeScript: source.coffee</span><br><span class="line">CSS: source.css</span><br><span class="line">D: source.d</span><br><span class="line">Diff: source.diff</span><br><span class="line">Erlang: source.erlang</span><br><span class="line">Go: source.go</span><br><span class="line">GraphViz: source.dot</span><br><span class="line">Groovy: source.groovy</span><br><span class="line">Haskell: source.haskell</span><br><span class="line">HTML: text.html(.basic)</span><br><span class="line">JSP: text.html.jsp</span><br><span class="line">Java: source.java</span><br><span class="line">Java Properties: source.java-props</span><br><span class="line">Java Doc: text.html.javadoc</span><br><span class="line">JSON: source.json</span><br><span class="line">Javascript: source.js</span><br><span class="line">BibTex: source.bibtex</span><br><span class="line">Latex Log: text.log.latex</span><br><span class="line">Latex Memoir: text.tex.latex.memoir</span><br><span class="line">Latex: text.tex.latex</span><br><span class="line">LESS: source.css.less</span><br><span class="line">TeX: text.tex</span><br><span class="line">Lisp: source.lisp</span><br><span class="line">Lua: source.lua</span><br><span class="line">MakeFile: source.makefile</span><br><span class="line">Markdown: text.html.markdown</span><br><span class="line">Multi Markdown: text.html.markdown.multimarkdown</span><br><span class="line">Matlab: source.matlab</span><br><span class="line">Objective-C: source.objc</span><br><span class="line">Objective-C++: source.objc++</span><br><span class="line">OCaml campl4: source.camlp4.ocaml</span><br><span class="line">OCaml: source.ocaml</span><br><span class="line">OCamllex: source.ocamllex</span><br><span class="line">Perl: source.perl</span><br><span class="line">PHP: source.php</span><br><span class="line">Regular Expression(python): source.regexp.python</span><br><span class="line">Python: source.python</span><br><span class="line">R Console: source.r-console</span><br><span class="line">R: source.r</span><br><span class="line">Ruby on Rails: source.ruby.rails</span><br><span class="line">Ruby HAML: text.haml</span><br><span class="line">SQL(Ruby): source.sql.ruby</span><br><span class="line">Regular Expression: source.regexp</span><br><span class="line">RestructuredText: text.restructuredtext</span><br><span class="line">Ruby: source.ruby</span><br><span class="line">SASS: source.sass</span><br><span class="line">Scala: source.scala</span><br><span class="line">Shell Script: source.shell</span><br><span class="line">SQL: source.sql</span><br><span class="line">Stylus: source.stylus</span><br><span class="line">TCL: source.tcl</span><br><span class="line">HTML(TCL): text.html.tcl</span><br><span class="line">Plain text: text.plain</span><br><span class="line">Textile: text.html.textile</span><br><span class="line">XML: text.xml</span><br><span class="line">XSL: text.xml.xsl</span><br><span class="line">YAML: source.yaml</span><br></pre></td></tr></table></figure>
+
+
+
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Vim/" rel="tag"># Vim</a>
+              <a href="/tags/Sublime-Text-3/" rel="tag"># Sublime Text 3</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2015/02/13/sed-in-shell-1/" rel="prev" title="Sed - 1：基本概念">
+      <i class="fa fa-chevron-left"></i> Sed - 1：基本概念
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2015/04/15/sed-in-shell-2/" rel="next" title="Sed - 2：常用功能">
+      Sed - 2：常用功能 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Vim中的Ultisnips插件"><span class="nav-number">1.</span> <span class="nav-text">Vim中的Ultisnips插件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Sublime-text-3中的snippet"><span class="nav-number">2.</span> <span class="nav-text">Sublime text 3中的snippet</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Yunfei Zu"
+      src="/images/gaara.png">
+  <p class="site-author-name" itemprop="name">Yunfei Zu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">54</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">42</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/yunfeizu" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;yunfeizu" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.linkedin.com/in/yunfeizu" title="Linkedin → https:&#x2F;&#x2F;www.linkedin.com&#x2F;in&#x2F;yunfeizu" rel="noopener" target="_blank"><i class="fab fa-linkedin fa-fw"></i>Linkedin</a>
+      </span>
+  </div>
+
+
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Yunfei Zu</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<script>
+  var disqus_config = function() {
+    this.page.url = "http://zuyunfei.com/2015/03/02/code-snippets/";
+    this.page.identifier = "2015/03/02/code-snippets/";
+    this.page.title = "Snippets 代码片段";
+    };
+  NexT.utils.loadComments(document.querySelector('#disqus_thread'), () => {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: disqus_config
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://yunfeizugithub.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  });
+</script>
+
+</body>
+</html>

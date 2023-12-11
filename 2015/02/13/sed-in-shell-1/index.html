@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zuyunfei.com","root":"/","scheme":"Gemini","version":"8.0.0-rc.3","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":false,"nav":null,"activeClass":"disqus"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Sed编辑器Sed编辑器被称作“流编辑器”，不同于一般的交互式文本编辑器（比如Vim、nano）需要用户交互式的输入来编辑文本内容，Sed会基于预先提供的一组规则来编辑数据流。在Shell脚本中，解析LOG文件或修改配置文件等处理文本文件的任务非常普遍。而Sed这样的命令行编辑器正好满足在Shell脚本中完成自动处理文本的需求。 调用选项1sed [OPTION]... &amp;#123;script-">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Sed - 1：基本概念">
+<meta property="og:url" content="http://zuyunfei.com/2015/02/13/sed-in-shell-1/index.html">
+<meta property="og:site_name" content="Cloud&#39;s Blog">
+<meta property="og:description" content="Sed编辑器Sed编辑器被称作“流编辑器”，不同于一般的交互式文本编辑器（比如Vim、nano）需要用户交互式的输入来编辑文本内容，Sed会基于预先提供的一组规则来编辑数据流。在Shell脚本中，解析LOG文件或修改配置文件等处理文本文件的任务非常普遍。而Sed这样的命令行编辑器正好满足在Shell脚本中完成自动处理文本的需求。 调用选项1sed [OPTION]... &amp;#123;script-">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2015-02-13T02:33:52.000Z">
+<meta property="article:modified_time" content="2022-11-12T05:20:47.851Z">
+<meta property="article:author" content="Yunfei Zu">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content=" Sed">
+<meta property="article:tag" content=" Shell">
+<meta property="article:tag" content=" 寻址">
+<meta property="article:tag" content=" 定界符">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://zuyunfei.com/2015/02/13/sed-in-shell-1/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Sed - 1：基本概念 | Cloud's Blog</title>
+  
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?39acf9b7e1b335eeb122f98224890a9e";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+        <span class="toggle-line toggle-line-first"></span>
+        <span class="toggle-line toggle-line-middle"></span>
+        <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Cloud's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://zuyunfei.com/2015/02/13/sed-in-shell-1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/gaara.png">
+      <meta itemprop="name" content="Yunfei Zu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Cloud's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Sed - 1：基本概念
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2015-02-13 10:33:52" itemprop="dateCreated datePublished" datetime="2015-02-13T10:33:52+08:00">2015-02-13</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="Sed编辑器"><a href="#Sed编辑器" class="headerlink" title="Sed编辑器"></a>Sed编辑器</h2><p>Sed编辑器被称作“流编辑器”，不同于一般的交互式文本编辑器（比如Vim、nano）需要用户交互式的输入来编辑文本内容，Sed会基于预先提供的一组规则来编辑数据流。在Shell脚本中，解析LOG文件或修改配置文件等处理文本文件的任务非常普遍。而Sed这样的命令行编辑器正好满足在Shell脚本中完成自动处理文本的需求。</p>
+<h2 id="调用选项"><a href="#调用选项" class="headerlink" title="调用选项"></a>调用选项</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sed [OPTION]... &#123;script-only-if-no-other-script&#125; [input-file]...</span><br></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th align="center">选项</th>
+<th align="left">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">-e</td>
+<td align="left">进行多项编辑，即对输入行应用多条sed命令时使用</td>
+</tr>
+<tr>
+<td align="center">-n</td>
+<td align="left">取消默认的输出, 等待print命令输出</td>
+</tr>
+<tr>
+<td align="center">-i</td>
+<td align="left">表示将转换结果直接插入文件中</td>
+</tr>
+<tr>
+<td align="center">-f</td>
+<td align="left">按照指定的sed脚本里面的命令来进行转换</td>
+</tr>
+</tbody></table>
+<a id="more"></a>
+<p>如果sed调用时没有 -e，-f 或者 –file 参数，第一个非选项的参数将被作为sed脚本，剩余参数都将作为输入文件名。<br>如果未指定输入文件名，sed将会读取标准输入STDIN。在shell编程中，用户可以直接将数据管道输出到sed上进行处理。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">echo</span> <span class="string">"This is a test"</span> | sed <span class="string">'s/test/big test/'</span></span><br><span class="line">This is a big <span class="built_in">test</span></span><br></pre></td></tr></table></figure>
+
+<p>由于<code>-i</code>选项会直接修改原文件，在操作重要文件时请谨慎使用。<br>如果未指定<code>-i</code>选项，sed不会改变原文件中的内容，只会将结果导出到标准输出。用户也可以用<code>&gt;</code>重定向到另一个文件。<br>在实际应用中，可以用sed基于配置文件模板，生成新的配置文件。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sed <span class="string">'s/Version:VER/Version:5.0/g'</span> config_template &gt; config</span><br></pre></td></tr></table></figure>
+<p>上面例子中sed读取config_template内容，将版本改为5.0，然后生成新的config文件。</p>
+<h2 id="行寻址"><a href="#行寻址" class="headerlink" title="行寻址"></a>行寻址</h2><p>默认情况下sed中使用的命令会作用于文本数据的所有行。如果需要限定命令只作用于某些行，需要指定行寻址（line addressing）。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"># 地址作用单个命令</span><br><span class="line">[address] command</span><br><span class="line"># 地址作用于多个命令</span><br><span class="line">[address] &#123;</span><br><span class="line">	command1</span><br><span class="line">	command2</span><br><span class="line">	command3</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>地址可以是：<strong>行号，正则表达式，或者匹配区间</strong>，具体如下面例子所示：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">$ sed &#39;2s&#x2F;dog&#x2F;cat&#x2F;&#39; data           # 只作用于第2行</span><br><span class="line">$ sed &#39;2,5s&#x2F;dog&#x2F;cat&#x2F;&#39; data         # 作用于2至5行</span><br><span class="line">$ sed &#39;5,$s&#x2F;dog&#x2F;cat&#x2F;&#39; data         # 作用于5到最后一行</span><br><span class="line">$ sed &#39;&#x2F;pattern&#x2F;s&#x2F;dog&#x2F;cat&#x2F;&#39; data   # 只作用于匹配pattern的行</span><br><span class="line">$ sed &#39;&#x2F;pattern1&#x2F;,&#x2F;pattern2&#x2F;s&#x2F;dog&#x2F;cat&#x2F;&#39; data # 作用于匹配pattern1的行到匹配pattern2的行之间</span><br><span class="line">$ sed &#39;2,&#x2F;pattern&#x2F;s&#x2F;dog&#x2F;cat&#x2F;&#39; data # 开始于第2行，直到匹配pattern的行结束</span><br><span class="line">$ sed &#39;2&#123;</span><br><span class="line">&gt; s&#x2F;fox&#x2F;elephant&#x2F;</span><br><span class="line">&gt; s&#x2F;dog&#x2F;cat&#x2F;</span><br><span class="line">&#125;&#39;                                 # 多个命令</span><br></pre></td></tr></table></figure>
+<h2 id="定界符"><a href="#定界符" class="headerlink" title="定界符"></a>定界符</h2><p>sed中一般使用正斜线作为字符串的分隔符，当然也允许使用其他字符作为定界符。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ sed &#39;s&#x2F;text&#x2F;TEXT&#x2F;g&#39;</span><br><span class="line">$ sed &#39;s:text:TEXT:g&#39; </span><br><span class="line">$ sed &#39;s|text|TEXT|g&#39;</span><br></pre></td></tr></table></figure>
+<p>但是定界符出现在样式内部时，需要进行转义。最常见的就是在Linux中文件路径是正斜线，如果sed的命令表达式也使用正斜线作为定界符，就必须使用反斜线转义。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sed &#39;s&#x2F;\&#x2F;bin\&#x2F;bash&#x2F;\&#x2F;bin\&#x2F;csh&#x2F;&#39; &#x2F;etc&#x2F;passwd</span><br><span class="line">sed &#39;s!&#x2F;bin&#x2F;bash!&#x2F;bin&#x2F;csh!&#39; &#x2F;etc&#x2F;passwdls</span><br></pre></td></tr></table></figure>
+
+<h2 id="更多内容……"><a href="#更多内容……" class="headerlink" title="更多内容……"></a>更多内容……</h2><p><a href="/2015/04/15/sed-in-shell-2/">Sed - 2: 常用功能</a><br><a href="/2015/07/13/sed-in-shell-3/">Sed - 3: 高级功能</a><br><a href="/2015/07/23/sed-in-shell-4/">Sed - 4: 经典用例</a></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Linux/" rel="tag"># Linux</a>
+              <a href="/tags/Sed/" rel="tag"># Sed</a>
+              <a href="/tags/Shell/" rel="tag"># Shell</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2014/11/15/DICOM-2-Data-Format/" rel="prev" title="DICOM 2: Data Format">
+      <i class="fa fa-chevron-left"></i> DICOM 2: Data Format
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2015/03/02/code-snippets/" rel="next" title="Snippets 代码片段">
+      Snippets 代码片段 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Sed编辑器"><span class="nav-number">1.</span> <span class="nav-text">Sed编辑器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#调用选项"><span class="nav-number">2.</span> <span class="nav-text">调用选项</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#行寻址"><span class="nav-number">3.</span> <span class="nav-text">行寻址</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#定界符"><span class="nav-number">4.</span> <span class="nav-text">定界符</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#更多内容……"><span class="nav-number">5.</span> <span class="nav-text">更多内容……</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Yunfei Zu"
+      src="/images/gaara.png">
+  <p class="site-author-name" itemprop="name">Yunfei Zu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">54</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">42</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/yunfeizu" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;yunfeizu" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.linkedin.com/in/yunfeizu" title="Linkedin → https:&#x2F;&#x2F;www.linkedin.com&#x2F;in&#x2F;yunfeizu" rel="noopener" target="_blank"><i class="fab fa-linkedin fa-fw"></i>Linkedin</a>
+      </span>
+  </div>
+
+
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Yunfei Zu</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<script>
+  var disqus_config = function() {
+    this.page.url = "http://zuyunfei.com/2015/02/13/sed-in-shell-1/";
+    this.page.identifier = "2015/02/13/sed-in-shell-1/";
+    this.page.title = "Sed - 1：基本概念";
+    };
+  NexT.utils.loadComments(document.querySelector('#disqus_thread'), () => {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: disqus_config
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://yunfeizugithub.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zuyunfei.com","root":"/","scheme":"Gemini","version":"8.0.0-rc.3","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":false,"nav":null,"activeClass":"disqus"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="转发自Queena为learning circle准备的Blog. 原文地址：C++11 Functional ##c++11 functional ###std::function  function is a template. As with other templates we’ve used, we must specify return type and argument types">
+<meta property="og:type" content="article">
+<meta property="og:title" content="(Forward) C++11 functional">
+<meta property="og:url" content="http://zuyunfei.com/2013/06/06/forward-c++11-functional/index.html">
+<meta property="og:site_name" content="Cloud&#39;s Blog">
+<meta property="og:description" content="转发自Queena为learning circle准备的Blog. 原文地址：C++11 Functional ##c++11 functional ###std::function  function is a template. As with other templates we’ve used, we must specify return type and argument types">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2013-06-06T01:49:43.000Z">
+<meta property="article:modified_time" content="2022-11-12T05:20:47.832Z">
+<meta property="article:author" content="Yunfei Zu">
+<meta property="article:tag" content="C++">
+<meta property="article:tag" content=" C++11">
+<meta property="article:tag" content=" C++0x">
+<meta property="article:tag" content=" functional">
+<meta property="article:tag" content=" std::function">
+<meta property="article:tag" content=" std::bind">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://zuyunfei.com/2013/06/06/forward-c++11-functional/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>(Forward) C++11 functional | Cloud's Blog</title>
+  
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?39acf9b7e1b335eeb122f98224890a9e";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+        <span class="toggle-line toggle-line-first"></span>
+        <span class="toggle-line toggle-line-middle"></span>
+        <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Cloud's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://zuyunfei.com/2013/06/06/forward-c++11-functional/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/gaara.png">
+      <meta itemprop="name" content="Yunfei Zu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Cloud's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          (Forward) C++11 functional
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2013-06-06 09:49:43" itemprop="dateCreated datePublished" datetime="2013-06-06T09:49:43+08:00">2013-06-06</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/C/" itemprop="url" rel="index"><span itemprop="name">C++</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>转发自Queena为learning circle准备的Blog. 原文地址：<a href="http://queeza.github.io/blog/2013/04/24/c-plus-plus-11-functional/" target="_blank" rel="noopener">C++11 Functional</a></p>
+<p>##c++11 functional</p>
+<p>###std::function<br>  <em>function</em> is a template. As with other templates we’ve used, we must specify return type and argument types  when we create a <em>function</em> type.<br>e.g. function&lt;int(int, int)&gt;</p>
+<a id="more"></a>
+<ul>
+<li><strong>C++98 Function pointers and member function pointers</strong><ol>
+<li>Exact parameter/return types  must be specified.  </li>
+<li>Can’t point to nonstatic member functions.  </li>
+<li>Can’t point to function objects.  </li>
+</ol>
+</li>
+<li>__boost::function __<ol>
+<li>Using for function, member functions and function objects.  </li>
+<li>Useful for callback function.</li>
+</ol>
+</li>
+<li><strong>C++11 std::function</strong><ol>
+<li>Using for callable entities that can be called like a function.<ul>
+<li><em>Functions, function points, function references.</em>  </li>
+<li><em>Object  implicitly convertible to one of those.</em>  </li>
+<li><em>Function object.</em>  </li>
+</ul>
+</li>
+<li>Useful to be able to refer to any callable entity compatible with a given calling interface.  </li>
+</ol>
+</li>
+</ul>
+<p><em>example:</em></p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;functional&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> add(<span class="keyword">int</span> i, <span class="keyword">int</span> j)</span><br><span class="line">&#123;</span><br><span class="line">  <span class="keyword">return</span> i +j;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> (*addPoint)(<span class="keyword">int</span>, <span class="keyword">int</span>) = add;</span><br><span class="line"></span><br><span class="line">auto mod = [](<span class="keyword">int</span> i, <span class="keyword">int</span> j) &#123;<span class="keyword">return</span> i % j;&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> Div &#123;</span><br><span class="line">public:</span><br><span class="line">  <span class="keyword">int</span> operator () (<span class="keyword">int</span> i, <span class="keyword">int</span> j) &#123;</span><br><span class="line">    <span class="keyword">return</span> i / j;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> Operation&#123;</span><br><span class="line">public:</span><br><span class="line">   <span class="keyword">int</span> minus(<span class="keyword">int</span> num1, <span class="keyword">int</span> num2) &#123; <span class="keyword">return</span> num1 - num2; &#125;</span><br><span class="line">   <span class="comment">//int information = 99;</span></span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">int</span> main() &#123;</span><br><span class="line">std::function&lt;<span class="keyword">int</span>(<span class="keyword">int</span>, <span class="keyword">int</span>)&gt; f1 = add;                          <span class="comment">//user-defined function</span></span><br><span class="line">std::function&lt;<span class="keyword">int</span>(<span class="keyword">int</span>, <span class="keyword">int</span>)&gt; f2 = addPoint;                     <span class="comment">//function pointer</span></span><br><span class="line"></span><br><span class="line">std::function&lt;<span class="keyword">int</span>(<span class="keyword">int</span>, <span class="keyword">int</span>)&gt; f3 = Div();                         <span class="comment">//user-defined class object with overloadding the fuction-call operator.</span></span><br><span class="line">std::function&lt;<span class="keyword">int</span>(<span class="keyword">int</span>, <span class="keyword">int</span>)&gt; f4 = std::minus&lt;<span class="keyword">int</span>&gt;();             <span class="comment">//library function object</span></span><br><span class="line"></span><br><span class="line">std::function&lt;<span class="keyword">int</span>(<span class="keyword">int</span>, <span class="keyword">int</span>)&gt; f5 = [](<span class="keyword">int</span> i, <span class="keyword">int</span> j)&#123;<span class="keyword">return</span> i*j;&#125;; <span class="comment">//unamed lambda</span></span><br><span class="line">std::function&lt;<span class="keyword">int</span>(<span class="keyword">int</span>, <span class="keyword">int</span>)&gt; f6 = mod;                           <span class="comment">//named lambda object</span></span><br><span class="line"></span><br><span class="line">Operation operation;</span><br><span class="line">std::function&lt;<span class="keyword">int</span>(<span class="keyword">int</span>, <span class="keyword">int</span>)&gt; f7 = std::bind(&amp;Operation::minus,</span><br><span class="line">                                            operation,</span><br><span class="line">                                            std::placeholders::_1,</span><br><span class="line">                                            std::placeholders::_2);<span class="comment">//a call of std::bind</span></span><br><span class="line">std::function&lt;<span class="keyword">int</span>(Operation&amp;, <span class="keyword">int</span>, <span class="keyword">int</span>)&gt; f8 =  &amp;Operation::minus;  <span class="comment">//member function</span></span><br><span class="line">std::function&lt;<span class="keyword">int</span>(Operation*, <span class="keyword">int</span>, <span class="keyword">int</span>)&gt; f9 =  &amp;Operation::minus;  <span class="comment">//member function</span></span><br><span class="line">&#125;</span><br><span class="line">std::cerr&lt;&lt;f1(<span class="number">4</span>,<span class="number">2</span>)&lt;&lt;std::endl;</span><br><span class="line">std::cerr&lt;&lt;f2(<span class="number">4</span>,<span class="number">2</span>)&lt;&lt;std::endl;</span><br><span class="line">std::cerr&lt;&lt;f3(<span class="number">4</span>,<span class="number">2</span>)&lt;&lt;std::endl;</span><br><span class="line">std::cerr&lt;&lt;f4(<span class="number">4</span>,<span class="number">2</span>)&lt;&lt;std::endl;</span><br><span class="line">std::cerr&lt;&lt;f5(<span class="number">4</span>,<span class="number">2</span>)&lt;&lt;std::endl;</span><br><span class="line">std::cerr&lt;&lt;f6(<span class="number">4</span>,<span class="number">2</span>)&lt;&lt;std::endl;</span><br><span class="line">std::cerr&lt;&lt;f7(<span class="number">4</span>,<span class="number">2</span>)&lt;&lt;std::endl;</span><br><span class="line">std::cerr&lt;&lt;f8(operation,<span class="number">4</span>,<span class="number">2</span>)&lt;&lt;std::endl;</span><br><span class="line">std::cerr&lt;&lt;f9(&amp;operation,<span class="number">4</span>,<span class="number">2</span>)&lt;&lt;std::endl;</span><br></pre></td></tr></table></figure>
+
+<p>  std::bad_function_call is the type of the exception thrown by std::function::operator() if the function wrapper has no target.</p>
+<p><em>example:</em></p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">std::function&lt;<span class="keyword">int</span>()&gt; f = nullptr;</span><br><span class="line">try &#123;</span><br><span class="line">    f();</span><br><span class="line">&#125; catch(<span class="keyword">const</span> std::bad_function_call&amp; e) &#123;</span><br><span class="line">    std::cout &lt;&lt; e.what() &lt;&lt; <span class="string">'\n'</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><em>Reference:</em> <a href="http://en.cppreference.com/w/cpp/utility/functional/function" target="_blank" rel="noopener">std::functionn</a></p>
+<p>###std::mem_fn</p>
+<p>   To use <em>function</em>, we must supply the call signature of the member we want to call. We can, instead, let the compiler deduce the member’s type<br>by using another library facility,<em>mem_fn</em>, whick like <em>function</em>, is defined in the <em>functional header</em>.Like <em>function</em>, <em>mem_fn</em> generates a callable<br>object from a pointer to member. Unlike <em>function</em>, <em>mem_fn</em> will deduce the type of callable from the type of the pointer to member.</p>
+<ul>
+<li><strong>C++98 std::mem_fun/mem_fun_ref</strong>  <ol>
+<li>Only can deal with member functions with one or no argument.</li>
+<li>You should pick between both depending on which you want to deal with pointer or reference for class object.</li>
+<li>Do not support smart pointer.</li>
+</ol>
+</li>
+<li><em><em>boost::mem_fn _</em><br>_boost::mem_fn</em> is ageneralization of the <em>std::mem_fun/mem_fun_ref</em>. It support member function pointers with more than one argument, and support<br>smart poiter.</li>
+<li><em><em>C++11 std::mem_fn _</em><br>Similar with _boost::mem_fn</em>. The name is quite confusing!(mem_fun Vs mem_fn) </li>
+</ul>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> Foo &#123;</span><br><span class="line">    <span class="keyword">void</span> displayGreeting() &#123;</span><br><span class="line">        std::cout &lt;&lt; <span class="string">"Hello, world.\n"</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">void</span> displayNumber(<span class="keyword">int</span> i) &#123;</span><br><span class="line">        std::cout &lt;&lt; <span class="string">"number: "</span> &lt;&lt; i &lt;&lt; <span class="string">'\n'</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span> dataValue() &#123;</span><br><span class="line">      <span class="keyword">return</span> data;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span> data;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">int</span> main &#123;</span><br><span class="line">  Foo foo;</span><br><span class="line">  foo.data = <span class="number">100</span>;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// member function without parameter</span></span><br><span class="line">  auto f1 = std::mem_fn(&amp;Foo::displayGreeting);</span><br><span class="line">  f1(foo);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// member function with parameter</span></span><br><span class="line">  auto f2 = std::mem_fn(&amp;Foo::displayNumber);</span><br><span class="line">  f2(foo, <span class="number">55</span>);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// member varibale</span></span><br><span class="line">  auto data = std::mem_fn(&amp;Foo::data);</span><br><span class="line">  std::cout &lt;&lt; <span class="string">"data: "</span> &lt;&lt; data(foo) &lt;&lt; <span class="string">'\n'</span>;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// member function that return int</span></span><br><span class="line">  auto f3 = std::mem_fn(&amp;Foo::dataValue);</span><br><span class="line">  auto f4 = std::mem_fn&lt;<span class="keyword">int</span>()&gt;(&amp;Foo::dataValue);</span><br><span class="line"></span><br><span class="line">  std::cout &lt;&lt; <span class="string">"data: "</span> &lt;&lt; f3(foo) &lt;&lt; <span class="string">'\n'</span>;</span><br><span class="line">  std::cout &lt;&lt; <span class="string">"data: "</span> &lt;&lt; f4(foo) &lt;&lt; <span class="string">'\n'</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><em>Reference:</em> <a href="http://en.cppreference.com/w/cpp/utility/functional/mem_fn" target="_blank" rel="noopener">std::mem_fn</a></p>
+<p>###std::bind</p>
+<p>   The bind can be thought of as a general-purpose function adaptor. It takes a callable object and generates a new callable that “adapts” the<br>parameter list of the original object. The general form of a call to bind is:<br>    auto <em>newCallable</em> = bind(<em>Callable</em>, <em>arg_list</em>);</p>
+<ul>
+<li><strong>C++98 std::bind1st/std::bind2nd</strong><br> bind1st(op, value) <em>op(value, param)</em> and bind2nd(op, value) <em>op(param, value)</em>. <em>op</em> is a binary functor, and <em>bind1st/bind2nd</em> actually make the<br>binary functor to unary functor. <em>bind1st</em> bind the fist parameter and <em>bind2nd</em> bind the sencond one. Not flexible!<ol>
+<li>Bind only first or second arguments.</li>
+<li>Bind only one argument at a time.</li>
+<li>Can’t bind functions with reference parameters.</li>
+<li>Require adaptable function objects. i.e.<em>ptr_fun</em>, <em>mem_fun</em>, and mem_fun_ref_.</li>
+</ol>
+</li>
+<li><strong>boost::bind</strong><br> <em>boost:::bind</em> is generalization of the c++98 <em>std::bin1st/std::bind2nd</em>. It supports arbitrary function objects, function, function pointer, and<br>member function pointers, and is able to bind any argument to a specific value or route input arguments into arbitrary positions. <em>bind</em> does not place<br>any requirements on the function object; in particular. Mostly it can <a href="http://www.boost.org/doc/libs/1_49_0/boost/bind/placeholders.hpp" target="_blank" rel="noopener">bind 9 parameters</a>.</li>
+<li><strong>c++11 std::bind</strong><br>  Similar with the <em>boost::bind</em>.   <ol>
+<li><em>functionObject</em> std::bind(_callableEntity, 1stArgBinding, 2ndArgBinding… nthArgBinding);  <a href="http://en.cppreference.com/w/cpp/utility/functional/placeholders" target="_blank" rel="noopener">There’s no limit for binding parameters’ number</a>.</li>
+<li>_1 is in namespace std::placeholders.</li>
+</ol>
+</li>
+</ul>
+<p><em>example:</em></p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> info(std::string&amp; name, <span class="keyword">int</span> age, <span class="keyword">double</span> high, <span class="keyword">double</span> weight) &#123;</span><br><span class="line">  std::cout&lt;&lt;<span class="string">"--------Info-----------"</span>&lt;&lt;std::endl;</span><br><span class="line">  std::cout&lt;&lt;<span class="string">"name: "</span>&lt;&lt;name&lt;&lt;std::endl;</span><br><span class="line">  std::cout&lt;&lt;<span class="string">"age: "</span>&lt;&lt;age&lt;&lt;std::endl;</span><br><span class="line">  std::cout&lt;&lt;<span class="string">"high: "</span>&lt;&lt;high&lt;&lt;std::endl;</span><br><span class="line">  std::cout&lt;&lt;<span class="string">"weight: "</span>&lt;&lt;weight&lt;&lt;std::endl;</span><br><span class="line">  <span class="keyword">return</span> age;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">double</span> high(<span class="keyword">double</span> high) &#123;</span><br><span class="line">  <span class="keyword">return</span> high;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">struct</span> Foo &#123;</span><br><span class="line">    <span class="keyword">void</span> displayGreeting() &#123;</span><br><span class="line">        std::cout &lt;&lt; <span class="string">"Hello, world.\n"</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">void</span> displayNumber(<span class="keyword">int</span> i) &#123;</span><br><span class="line">        std::cout &lt;&lt; <span class="string">"number: "</span> &lt;&lt; i &lt;&lt; <span class="string">'\n'</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span> dataValue() &#123;</span><br><span class="line">      <span class="keyword">return</span> data;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span> data;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> main &#123;</span><br><span class="line">  std::string lily = <span class="string">"Lily"</span>;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// like the lily and 160.6 is pass by value</span></span><br><span class="line">  <span class="comment">// like std::placeholders::_1 pass by reference</span></span><br><span class="line">  std::bind&lt;<span class="keyword">int</span>&gt;(info, std::placeholders::_1, <span class="number">18</span>, std::placeholders::_2, std::placeholders::_2)(lily, <span class="number">160.6</span>);</span><br><span class="line"></span><br><span class="line">  auto f1 = std::bind(info, std::placeholders::_1, <span class="number">18</span>, std::placeholders::_2, std::placeholders::_2);</span><br><span class="line">  f1(lily, <span class="number">160.6</span>);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// nested bind</span></span><br><span class="line">  auto f2 = std::bind(high, std::placeholders::_1)(<span class="number">160.6</span>);</span><br><span class="line">  std::bind(info, lily,  std::placeholders::_1, f2, std::placeholders::_2)(<span class="number">18</span>, <span class="number">160.6</span>);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// nested bind subexpressions share the placeholders</span></span><br><span class="line">  std::bind(info, lily,  std::placeholders::_1, std::placeholders::_2, std::bind(high, std::placeholders::_2))(<span class="number">18</span>, <span class="number">160.6</span>);</span><br><span class="line"></span><br><span class="line">  <span class="comment">//bind to a member function object</span></span><br><span class="line">  Foo foo;</span><br><span class="line">  auto f3 = std::bind(&amp;Foo::displayNumber, foo, std::placeholders::_1);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// bind pointer</span></span><br><span class="line">  Foo* pfoo;</span><br><span class="line">  auto f4 = std::bind(&amp;Foo::displayNumber, pfoo, std::placeholders::_1);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// bind smart pointer</span></span><br><span class="line">  std::shared_ptr&lt;Foo&gt; spfoo;</span><br><span class="line">  auto f5 = std::bind(&amp;Foo::displayNumber, spfoo, std::placeholders::_1);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// bind uniqu pointer.(std::unique_ptr must be wrapped by std::ref when bound,</span></span><br><span class="line">  <span class="comment">//                    because std::unique_ptr isn’t copyable.)</span></span><br><span class="line">  std::unique_ptr&lt;Foo&gt; upfoo;</span><br><span class="line">  auto f6 = std::bind(&amp;Foo::displayNumber, std::ref(upfoo), std::placeholders::_1);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// bind member varibale</span></span><br><span class="line">  foo.data = <span class="number">77</span>;</span><br><span class="line">  auto f7 = std::bind(&amp;Foo::data, std::placeholders::_1);</span><br><span class="line"></span><br><span class="line">  f3(<span class="number">100</span>);</span><br><span class="line">  f4(<span class="number">100</span>);</span><br><span class="line">  f5(<span class="number">100</span>);</span><br><span class="line">  f6(<span class="number">100</span>);</span><br><span class="line">  std::cout&lt;&lt; f7(foo) &lt;&lt; std::endl;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><em>Reference:</em> <a href="http://en.cppreference.com/w/cpp/utility/functional/bind" target="_blank" rel="noopener">std::bind</a></p>
+<p>###std::ref/cref<br>  Function templates ref and cref are helper functions that generate an object of type std::reference_wrapper, using template argument deduction to<br>determine the template argument of the result.</p>
+<p><em>example:</em></p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> fun(<span class="keyword">int</span>&amp; n1, <span class="keyword">int</span>&amp; n2, <span class="keyword">const</span> <span class="keyword">int</span>&amp; n3) &#123;</span><br><span class="line">  std::cout&lt;&lt; <span class="string">"In function"</span> &lt;&lt; n1 &lt;&lt; <span class="string">" "</span> &lt;&lt; n2 &lt;&lt; <span class="string">" "</span> &lt;&lt; n3 &lt;&lt;std::endl;</span><br><span class="line">  ++n1;</span><br><span class="line">  ++n2;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> main &#123;</span><br><span class="line"><span class="keyword">int</span> n1 =<span class="number">1</span>, n2 = <span class="number">2</span>, n3 =<span class="number">3</span>;</span><br><span class="line">std::function&lt;<span class="keyword">void</span>()&gt; f1 = std::bind(fun, n1, std::ref(n2), std::cref(n3));</span><br><span class="line"></span><br><span class="line">std::cout&lt;&lt;<span class="string">"Before: "</span>&lt;&lt;n1 &lt;&lt;<span class="string">" "</span>&lt;&lt;n2&lt;&lt; <span class="string">" "</span>&lt;&lt; n3 &lt;&lt;std::endl;</span><br><span class="line">f1();</span><br><span class="line">std::cout&lt;&lt;<span class="string">"After: "</span>&lt;&lt;n1 &lt;&lt;<span class="string">" "</span>&lt;&lt;n2&lt;&lt; <span class="string">" "</span>&lt;&lt; n3 &lt;&lt;std::endl;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><em>output:</em></p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Before: <span class="number">1</span> <span class="number">2</span> <span class="number">3</span></span><br><span class="line">In function1 <span class="number">2</span> <span class="number">3</span></span><br><span class="line">After: <span class="number">1</span> <span class="number">3</span> <span class="number">3</span></span><br></pre></td></tr></table></figure>
+<p><em>Reference:</em> <a href="http://en.cppreference.com/w/cpp/utility/functional/ref" target="_blank" rel="noopener">std::ref/cref</a></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/C/" rel="tag"># C++</a>
+              <a href="/tags/C-11/" rel="tag"># C++11</a>
+              <a href="/tags/Learning-Circle/" rel="tag"># Learning Circle</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2013/05/31/c++-idioms-erase-remove/" rel="prev" title="C++ Idioms: Erase-Remove">
+      <i class="fa fa-chevron-left"></i> C++ Idioms: Erase-Remove
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2013/06/09/introduction-of-tmux/" rel="next" title="命令行利器tmux">
+      命令行利器tmux <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Yunfei Zu"
+      src="/images/gaara.png">
+  <p class="site-author-name" itemprop="name">Yunfei Zu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">54</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">42</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/yunfeizu" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;yunfeizu" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.linkedin.com/in/yunfeizu" title="Linkedin → https:&#x2F;&#x2F;www.linkedin.com&#x2F;in&#x2F;yunfeizu" rel="noopener" target="_blank"><i class="fab fa-linkedin fa-fw"></i>Linkedin</a>
+      </span>
+  </div>
+
+
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Yunfei Zu</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<script>
+  var disqus_config = function() {
+    this.page.url = "http://zuyunfei.com/2013/06/06/forward-c++11-functional/";
+    this.page.identifier = "2013/06/06/forward-c++11-functional/";
+    this.page.title = "(Forward) C++11 functional";
+    };
+  NexT.utils.loadComments(document.querySelector('#disqus_thread'), () => {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: disqus_config
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://yunfeizugithub.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  });
+</script>
+
+</body>
+</html>

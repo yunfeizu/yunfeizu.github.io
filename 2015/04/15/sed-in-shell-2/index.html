@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zuyunfei.com","root":"/","scheme":"Gemini","version":"8.0.0-rc.3","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":false,"nav":null,"activeClass":"disqus"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="文本替换1[address]s&#x2F;pattern&#x2F;replacement&#x2F;flags 4种常用替换标记：  n数字 : 表明仅替换前n个被pattern匹配的内容 g : 表明替换所有匹配的地方。如果flags为空，则默认替换第一次匹配。 p : 仅当行被pattern匹配时，打印模式空间的内容 w file : 将替换的结果写入到文件  123456789101112">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Sed - 2：常用功能">
+<meta property="og:url" content="http://zuyunfei.com/2015/04/15/sed-in-shell-2/index.html">
+<meta property="og:site_name" content="Cloud&#39;s Blog">
+<meta property="og:description" content="文本替换1[address]s&#x2F;pattern&#x2F;replacement&#x2F;flags 4种常用替换标记：  n数字 : 表明仅替换前n个被pattern匹配的内容 g : 表明替换所有匹配的地方。如果flags为空，则默认替换第一次匹配。 p : 仅当行被pattern匹配时，打印模式空间的内容 w file : 将替换的结果写入到文件  123456789101112">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2015-04-15T02:33:58.000Z">
+<meta property="article:modified_time" content="2022-11-12T05:20:47.859Z">
+<meta property="article:author" content="Yunfei Zu">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content=" Sed">
+<meta property="article:tag" content=" Shell">
+<meta property="article:tag" content=" 文本替换">
+<meta property="article:tag" content=" 添加行，打印">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://zuyunfei.com/2015/04/15/sed-in-shell-2/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Sed - 2：常用功能 | Cloud's Blog</title>
+  
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?39acf9b7e1b335eeb122f98224890a9e";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+        <span class="toggle-line toggle-line-first"></span>
+        <span class="toggle-line toggle-line-middle"></span>
+        <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Cloud's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://zuyunfei.com/2015/04/15/sed-in-shell-2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/gaara.png">
+      <meta itemprop="name" content="Yunfei Zu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Cloud's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Sed - 2：常用功能
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2015-04-15 10:33:58" itemprop="dateCreated datePublished" datetime="2015-04-15T10:33:58+08:00">2015-04-15</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="文本替换"><a href="#文本替换" class="headerlink" title="文本替换"></a>文本替换</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[address]s&#x2F;pattern&#x2F;replacement&#x2F;flags</span><br></pre></td></tr></table></figure>
+<p>4种常用替换标记：</p>
+<ul>
+<li>n数字 : 表明仅替换前n个被pattern匹配的内容</li>
+<li>g : 表明替换所有匹配的地方。如果flags为空，则默认替换第一次匹配。</li>
+<li>p : 仅当行被pattern匹配时，打印模式空间的内容</li>
+<li>w file : 将替换的结果写入到文件</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">$ cat data</span><br><span class="line">This is a <span class="built_in">test</span> of the <span class="built_in">test</span> script.</span><br><span class="line">This is the second <span class="built_in">test</span> of the <span class="built_in">test</span> script.</span><br><span class="line">$</span><br><span class="line">$ sed <span class="string">'s/test/trail/'</span> data   <span class="comment">#默认替换每一行的第1次匹配</span></span><br><span class="line">This is a trail of the <span class="built_in">test</span> script.</span><br><span class="line">This is the second trail of the <span class="built_in">test</span> script.</span><br><span class="line">$</span><br><span class="line">$ sed <span class="string">'s/test/trial/2'</span> data  <span class="comment">#只替换每一行的第2次匹配</span></span><br><span class="line">This is a <span class="built_in">test</span> of the trial script.</span><br><span class="line">This is the second <span class="built_in">test</span> of the trial script.</span><br><span class="line">$</span><br><span class="line">$ sed <span class="string">'s/test/trial/g'</span> data  <span class="comment">#替换所有的匹配</span></span><br><span class="line">This is a trial of the trial script.</span><br><span class="line">This is the second trial of the trial script.</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+<p>p替换标记会打印包含与制定模式匹配的行，经常会和-n选项一起使用，实现只打印修改过的行。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">$ cat data</span><br><span class="line">This is a <span class="built_in">test</span> line.</span><br><span class="line">This is a different line.</span><br><span class="line">$</span><br><span class="line">$ sed -n <span class="string">'s/test/trial/p'</span> data <span class="comment">#只打印修改过的行</span></span><br><span class="line">This is a trial line.</span><br><span class="line">$</span><br><span class="line">$ sed <span class="string">'s/test/trial/p'</span> data <span class="comment">#未使用-n选项，sed默认将打印所有行，造成修改过的行被打印两次。</span></span><br><span class="line">This is a trial line.</span><br><span class="line">This is a trial line.</span><br><span class="line">This is a different line.</span><br></pre></td></tr></table></figure>
+<p>还有两种只有GNU sed中才支持的替换标记：</p>
+<ul>
+<li>i : 忽略大小写</li>
+<li>e : 把模式空间中内容作为shell命令执行，结果返回模式空间。</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">$ cat files.txt</span><br><span class="line">/etc/passwd</span><br><span class="line">/etc/group</span><br><span class="line">$</span><br><span class="line">$ sed <span class="string">'s/^/ls -l /'</span> files.txt <span class="comment">#在每行开头加上"ls -l " </span></span><br><span class="line">ls -l /etc/passwd</span><br><span class="line">ls -l /etc/group</span><br><span class="line">$</span><br><span class="line">$ sed <span class="string">'s/^/ls -l /e'</span> files.txt <span class="comment">#在每行开头加上"ls -l "，然后执行，输出结果。</span></span><br><span class="line">-rw-r--r-- 1 root root 1547 Oct 27 08:11 /etc/passwd</span><br><span class="line">-rw-r--r-- 1 root root 651 Oct 27 08:11 /etc/group</span><br></pre></td></tr></table></figure>
+
+<p>在replacemnt部分中经常使用的几个特殊的元字符：</p>
+<ul>
+<li>&amp;: 被pattern匹配的内容；</li>
+<li>\num: 被pattern匹配的第num个分组</li>
+<li>: 转义符号，用来转义&amp;，, 回车等符号</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">$ cat employee.txt</span><br><span class="line">101,John Doe,CEO</span><br><span class="line">102,Jason Smith,IT Manager</span><br><span class="line">103,Raj Reddy,Sysadmin</span><br><span class="line">104,Anand Ram,Developer</span><br><span class="line">105,Jane Miller,Sales Manager</span><br><span class="line"></span><br><span class="line"><span class="comment">#匹配开头的三位数字，在数字两边加中括号</span></span><br><span class="line">$ sed <span class="string">'s/^[0-9][0-9][0-9]/[&amp;]/g'</span> employee.txt</span><br><span class="line">[101],John Doe,CEO</span><br><span class="line">[102],Jason Smith,IT Manager</span><br><span class="line">[103],Raj Reddy,Sysadmin</span><br><span class="line">[104],Anand Ram,Developer</span><br><span class="line">[105],Jane Miller,Sales Manager</span><br><span class="line"></span><br><span class="line"><span class="comment">#匹配第一个都好之前的字符串，\1代表正则表达式中用()包含的第1个分组</span></span><br><span class="line">$ sed <span class="string">'s/\([^,]*\).*/\1/g'</span> employee.txt</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line"></span><br><span class="line"><span class="comment"># 匹配三个逗号隔开的字符串，\1 \3 代表第1和第3个分组</span></span><br><span class="line">$ sed <span class="string">'s/\([^,]*\),\([^,]*\),\([^,]*\).*/\1,\3/g'</span> employee.txt</span><br><span class="line">101,CEO</span><br><span class="line">102,IT Manager</span><br><span class="line">103,Sysadmin</span><br><span class="line">104,Developer</span><br><span class="line">105,Sales Manager</span><br></pre></td></tr></table></figure>
+
+<h2 id="行操作"><a href="#行操作" class="headerlink" title="行操作"></a>行操作</h2><h3 id="添加行和插入行"><a href="#添加行和插入行" class="headerlink" title="添加行和插入行"></a>添加行和插入行</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">$ sed <span class="string">'[address]a\the-line-to-append'</span> input-file <span class="comment"># 在指定行后append一个新行</span></span><br><span class="line">$ sed <span class="string">'[address]i\the-line-to-append'</span> input-file <span class="comment"># 在指定行前insert一个新行</span></span><br><span class="line"></span><br><span class="line">$ cat lines.txt</span><br><span class="line">This is line number 1.</span><br><span class="line">This is line number 2.</span><br><span class="line">This is line number 3.</span><br><span class="line">This is line number 4.</span><br><span class="line"></span><br><span class="line">$ sed <span class="string">'3i\</span></span><br><span class="line"><span class="string">&gt; This is an inserted line.'</span> lines.txt</span><br><span class="line">This is line number 1.</span><br><span class="line">This is line number 2.</span><br><span class="line">This is an inserted line.</span><br><span class="line">This is line number 3.</span><br><span class="line">This is line number 4.</span><br><span class="line"></span><br><span class="line">$ sed <span class="string">'3a\</span></span><br><span class="line"><span class="string">This is an inserted line.'</span> lines.txt</span><br><span class="line">This is line number 1.</span><br><span class="line">This is line number 2.</span><br><span class="line">This is line number 3.</span><br><span class="line">This is an inserted line.</span><br><span class="line">This is line number 4.</span><br></pre></td></tr></table></figure>
+<h3 id="删除行"><a href="#删除行" class="headerlink" title="删除行"></a>删除行</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">$ sed <span class="string">'[address]d'</span></span><br><span class="line"></span><br><span class="line">$ sed <span class="string">'3d'</span> lines.txt</span><br><span class="line">This is line number 1.</span><br><span class="line">This is line number 2.</span><br><span class="line">This is line number 4.</span><br><span class="line"></span><br><span class="line">$ sed <span class="string">'2,3d'</span> lines.txt</span><br><span class="line">This is line number 1.</span><br><span class="line">This is line number 4.</span><br></pre></td></tr></table></figure>
+<h3 id="修改行"><a href="#修改行" class="headerlink" title="修改行"></a>修改行</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">$ sed <span class="string">'[address]c\the-line-to-insert'</span> input-file</span><br><span class="line"></span><br><span class="line">$ sed <span class="string">'3c\</span></span><br><span class="line"><span class="string">&gt; This is a changed line of text'</span> lines.txt</span><br><span class="line">This is line number 1.</span><br><span class="line">This is line number 2.</span><br><span class="line">This is a changed line of text</span><br><span class="line">This is line number 4.</span><br></pre></td></tr></table></figure>
+<h2 id="打印命令"><a href="#打印命令" class="headerlink" title="打印命令"></a>打印命令</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[address]p</span><br><span class="line">[address]=</span><br><span class="line">[address]l</span><br></pre></td></tr></table></figure>
+<p>p命令用于打印匹配行的内容</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ sed -n <span class="string">'/number 2/p'</span> lines.txt</span><br><span class="line">This is line number 2.</span><br></pre></td></tr></table></figure>
+<p>=命令用于打印匹配行的行号</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">$ sed <span class="string">'='</span> lines.txt</span><br><span class="line">1</span><br><span class="line">This is line number 1.</span><br><span class="line">2</span><br><span class="line">This is line number 2.</span><br><span class="line">3</span><br><span class="line">This is line number 3.</span><br><span class="line">4</span><br><span class="line">This is line number 4.</span><br><span class="line"></span><br><span class="line">$ sed -n <span class="string">'/number 3/='</span> lines.txt</span><br><span class="line">3</span><br></pre></td></tr></table></figure>
+<p>l命令用于打印数据流中文本和p命令不能打印的ASCII字符</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ cat tab.txt </span><br><span class="line">This	line	contains	tabs.</span><br><span class="line">$</span><br><span class="line"><span class="variable">$sed</span> -n <span class="string">'l'</span> tab.txt 		<span class="comment"># 'l' 命令将文本中的制表符\t和换行符$都打印出来</span></span><br><span class="line">This\tline\tcontains\ttabs.$</span><br></pre></td></tr></table></figure>
+<h2 id="转换命令"><a href="#转换命令" class="headerlink" title="转换命令"></a>转换命令</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[address]y&#x2F;inchars&#x2F;outchars&#x2F;</span><br></pre></td></tr></table></figure>
+<p>转换命令会进行inchars和outchars的一对一转换。转换命令是一个全局操作，它会自动替换文本行中找到的所有指定字符。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ sed <span class="string">'y/123/789/'</span> lines.txt</span><br><span class="line">This is line number 7.</span><br><span class="line">This is line number 8.</span><br><span class="line">This is line number 9.</span><br><span class="line">This is line number 4.</span><br></pre></td></tr></table></figure>
+
+<h2 id="更多内容……"><a href="#更多内容……" class="headerlink" title="更多内容……"></a>更多内容……</h2><p><a href="/2015/02/13/sed-in-shell-1/">Sed - 1: 基本概念</a><br><a href="/2015/07/13/sed-in-shell-3/">Sed - 3: 高级功能</a><br><a href="/2015/07/23/sed-in-shell-4/">Sed - 4: 经典用例</a></p>
+<h2 id="其他参考资料"><a href="#其他参考资料" class="headerlink" title="其他参考资料"></a>其他参考资料</h2><p><a href="http://sed.sourceforge.net/sed1line_zh-CN.html" target="_blank" rel="noopener">SED单行脚本快速参考</a></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Linux/" rel="tag"># Linux</a>
+              <a href="/tags/Sed/" rel="tag"># Sed</a>
+              <a href="/tags/Shell/" rel="tag"># Shell</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2015/03/02/code-snippets/" rel="prev" title="Snippets 代码片段">
+      <i class="fa fa-chevron-left"></i> Snippets 代码片段
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2015/05/21/backup-sublime-settings/" rel="next" title="同步sublime设置">
+      同步sublime设置 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#文本替换"><span class="nav-number">1.</span> <span class="nav-text">文本替换</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#行操作"><span class="nav-number">2.</span> <span class="nav-text">行操作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#添加行和插入行"><span class="nav-number">2.1.</span> <span class="nav-text">添加行和插入行</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#删除行"><span class="nav-number">2.2.</span> <span class="nav-text">删除行</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#修改行"><span class="nav-number">2.3.</span> <span class="nav-text">修改行</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#打印命令"><span class="nav-number">3.</span> <span class="nav-text">打印命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#转换命令"><span class="nav-number">4.</span> <span class="nav-text">转换命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#更多内容……"><span class="nav-number">5.</span> <span class="nav-text">更多内容……</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#其他参考资料"><span class="nav-number">6.</span> <span class="nav-text">其他参考资料</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Yunfei Zu"
+      src="/images/gaara.png">
+  <p class="site-author-name" itemprop="name">Yunfei Zu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">54</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">42</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/yunfeizu" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;yunfeizu" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.linkedin.com/in/yunfeizu" title="Linkedin → https:&#x2F;&#x2F;www.linkedin.com&#x2F;in&#x2F;yunfeizu" rel="noopener" target="_blank"><i class="fab fa-linkedin fa-fw"></i>Linkedin</a>
+      </span>
+  </div>
+
+
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Yunfei Zu</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<script>
+  var disqus_config = function() {
+    this.page.url = "http://zuyunfei.com/2015/04/15/sed-in-shell-2/";
+    this.page.identifier = "2015/04/15/sed-in-shell-2/";
+    this.page.title = "Sed - 2：常用功能";
+    };
+  NexT.utils.loadComments(document.querySelector('#disqus_thread'), () => {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: disqus_config
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://yunfeizugithub.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  });
+</script>
+
+</body>
+</html>
