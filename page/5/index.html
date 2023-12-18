@@ -161,6 +161,82 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://zuyunfei.com/2013/06/06/forward-c++11-functional/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/gaara.png">
+      <meta itemprop="name" content="Yunfei Zu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Cloud's Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2013/06/06/forward-c++11-functional/" class="post-title-link" itemprop="url">(Forward) C++11 functional</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2013-06-06 09:49:43" itemprop="dateCreated datePublished" datetime="2013-06-06T09:49:43+08:00">2013-06-06</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/C/" itemprop="url" rel="index"><span itemprop="name">C++</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>转发自Queena为learning circle准备的Blog. 原文地址：<a href="http://queeza.github.io/blog/2013/04/24/c-plus-plus-11-functional/" target="_blank" rel="noopener">C++11 Functional</a></p>
+<p>##c++11 functional</p>
+<p>###std::function<br>  <em>function</em> is a template. As with other templates we’ve used, we must specify return type and argument types  when we create a <em>function</em> type.<br>e.g. function&lt;int(int, int)&gt;</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2013/06/06/forward-c++11-functional/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://zuyunfei.com/2013/05/31/c++-idioms-erase-remove/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -835,80 +911,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://zuyunfei.com/2013/04/10/setup-github-ssh-key/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/gaara.png">
-      <meta itemprop="name" content="Yunfei Zu">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Cloud's Blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2013/04/10/setup-github-ssh-key/" class="post-title-link" itemprop="url">为Github账户设置SSH key</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2013-04-10 10:11:00" itemprop="dateCreated datePublished" datetime="2013-04-10T10:11:00+08:00">2013-04-10</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Others/" itemprop="url" rel="index"><span itemprop="name">Others</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="什么是SSH-key"><a href="#什么是SSH-key" class="headerlink" title="什么是SSH key"></a>什么是SSH key</h2><p>一直使用SSH连接服务器，但是对它的原理却不太了解。这次设置Octopress的时候，需要使用SSH 方式连接Github, 正好对SSH的工作方式做了下了解。（好像Github推荐使用HTTPS的方式访问repo, 以前Github受到过<a href="https://github.com/blog/1068-public-key-security-vulnerability-and-mitigation" target="_blank" rel="noopener">SSH密匙攻击</a>，之后升级了SSH key的安全措施，https方式视乎更方便安全，不过Octopress的设置文档中，我并没有找到怎么使用HTTPS连接Github） </p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2013/04/10/setup-github-ssh-key/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -980,7 +982,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">54</span>
+          <span class="site-state-item-count">55</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -993,7 +995,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">42</span>
+        <span class="site-state-item-count">43</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>

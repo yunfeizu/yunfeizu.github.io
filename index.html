@@ -187,6 +187,15 @@
 
               <time title="创建时间：2022-06-01 10:33:42" itemprop="dateCreated datePublished" datetime="2022-06-01T10:33:42+08:00">2022-06-01</time>
             </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/AI/" itemprop="url" rel="index"><span itemprop="name">AI</span></a>
+                </span>
+            </span>
 
           
 
@@ -214,6 +223,63 @@
             </div>
           <!--/noindex-->
         
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://zuyunfei.com/2020/12/11/ppe-violation-detection-in-lab/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/gaara.png">
+      <meta itemprop="name" content="Yunfei Zu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Cloud's Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/12/11/ppe-violation-detection-in-lab/" class="post-title-link" itemprop="url">YOLO v5 实验室个人防护设备检测</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-12-11 12:18:39" itemprop="dateCreated datePublished" datetime="2020-12-11T12:18:39+08:00">2020-12-11</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <iframe src="//player.bilibili.com/player.html?aid=541719196&bvid=BV1Ti4y1g7qA&cid=221182448&p=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"> </iframe>
       
     </div>
 
@@ -848,82 +914,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://zuyunfei.com/2016/03/23/Shell-Truncate-File-Extension/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/gaara.png">
-      <meta itemprop="name" content="Yunfei Zu">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Cloud's Blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2016/03/23/Shell-Truncate-File-Extension/" class="post-title-link" itemprop="url">Shell 截取文件名和后缀</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2016-03-23 16:47:14" itemprop="dateCreated datePublished" datetime="2016-03-23T16:47:14+08:00">2016-03-23</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="截取文件名和后缀"><a href="#截取文件名和后缀" class="headerlink" title="截取文件名和后缀"></a>截取文件名和后缀</h2><p>编写Shell脚本的过程中，经常会和文件名和文件路径打交道。如果用户输入了一个文件的全名（可能包含绝对路径和文件后缀），如何得到文件的路径名，文件名，文件后缀这些信息呢。Shell脚本拥有强大的字符串处理能力，如果把文件名当做字符串，我们不难使用cut或sed这样的工具得到我们想要的结果。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">$fullfile&#x3D;&#x2F;the&#x2F;path&#x2F;foo.txt</span><br><span class="line">$fullname&#x3D;$(basename $fullfile)</span><br><span class="line">$dir&#x3D;$(dirname $fullfile)</span><br><span class="line">$filename&#x3D;$(echo $fullname | cut -d . -f1)</span><br><span class="line">$extension&#x3D;$(echo $fullname | cut -d . -f2)</span><br><span class="line">$ echo $dir , $fullname , $filename , $extension</span><br><span class="line">&#x2F;the&#x2F;path , foo.txt , foo , txt</span><br></pre></td></tr></table></figure>
-<p>这里使用<a href="http://pubs.opengroup.org/onlinepubs/007908799/xcu/basename.html" target="_blank" rel="noopener">basename</a>命令可以直接得到包含后缀的文件名，而<a href="http://pubs.opengroup.org/onlinepubs/007908799/xcu/dirname.html" target="_blank" rel="noopener">dirname</a>命令可以得到路径名，然后就能简单的用cut截取文件名和后缀名。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2016/03/23/Shell-Truncate-File-Extension/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -995,7 +985,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">54</span>
+          <span class="site-state-item-count">55</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -1008,7 +998,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">42</span>
+        <span class="site-state-item-count">43</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
